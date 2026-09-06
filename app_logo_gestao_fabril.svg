@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Gestão Fabril</title>
+  <desc id="desc">Logo Gestão Fabril com engrenagem e seta de otimização.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102D52"/>
+      <stop offset="1" stop-color="#2C5282"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#E58A32"/>
+      <stop offset="1" stop-color="#FFD08A"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-25%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#071B35" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="420" rx="64" fill="url(#bg)"/>
+  <circle cx="190" cy="210" r="158" fill="none" stroke="#FFFFFF" stroke-opacity=".1" stroke-width="2"/>
+  <g transform="translate(30 50) scale(.625)" filter="url(#shadow)">
+    <path fill="#E2E8F0" d="m112 222 28-9 7-31 31-8 17 27 27-14 23 23-14 27 27 17-8 31-31 7-9 28-32-2-8-28-31-6-8-31 26-18-12-28zm55 34a41 41 0 1 0 82 0 41 41 0 0 0-82 0z"/>
+    <path fill="url(#gold)" d="m224 342 70-70 40 40 91-112 35 29-125 153-41-40-45 45z"/>
+    <path fill="url(#gold)" d="m354 168 90 2-3 90-35-36-59 73-40-34 59-73z"/>
+  </g>
+  <text x="445" y="205" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" letter-spacing="3">GESTÃO</text>
+  <text x="445" y="285" fill="#F6AD55" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" letter-spacing="3">FABRIL</text>
+  <rect x="448" y="314" width="210" height="5" rx="3" fill="#FFFFFF" fill-opacity=".65"/>
+  <text x="445" y="350" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" letter-spacing="5">RELIABILITY · OPTIMIZATION</text>
+</svg>
