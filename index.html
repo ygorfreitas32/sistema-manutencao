@@ -151,19 +151,20 @@
       { id: 3, tag: 'ROL-ESER-04', loc: 'Almoxarifado Central', disc: 'Mecânica', calib: 'Não', cat: 'Sobressalente', val: 4500 },
       { id: 4, tag: 'BMB-ETA-08', loc: 'Estação de Tratamento', disc: 'Mecânica', calib: 'Sim', cat: 'Utilidades', val: 89000 }
     ];
-    let assets = JSON.parse(localStorage.getItem('pcm-assets') || 'null') || seedAssets;
+    const readStorage = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return value ?? fallback; } catch (error) { console.warn(`Dados locais inválidos em ${key}; usando padrão.`, error); return fallback; } };
+    let assets = readStorage('pcm-assets', seedAssets);
     assets = assets.map(asset => ({ ...asset, documents: asset.documents || [] }));
-    let auditLog = JSON.parse(localStorage.getItem('gestao-fabril-audit') || 'null') || [];
-    let maintenancePlans = JSON.parse(localStorage.getItem('pcm-plans') || 'null') || [
+    let auditLog = readStorage('gestao-fabril-audit', []);
+    let maintenancePlans = readStorage('pcm-plans', [
       { id: 101, discipline: 'Mecânica', title: 'Inspeção de vibração', asset: 'BMB-UTIL-01', date: '2026-09-01', status: 'Atrasado', client: 'Cliente demonstração' },
       { id: 102, discipline: 'Mecânica', title: 'Lubrificação preventiva', asset: 'CMP-UTL-02', date: '2026-09-06', status: 'Pendente', client: 'Cliente demonstração' },
       { id: 103, discipline: 'Elétrica', title: 'Termografia do painel', asset: 'MTR-REC-01', date: '2026-09-04', status: 'Pendente', client: 'Cliente demonstração' },
       { id: 104, discipline: 'Calibração', title: 'Calibração de manômetro', asset: 'BMB-ETA-08', date: '2026-09-02', status: 'Atrasado', client: 'Cliente demonstração' }
-    ];
+    ]);
     let currentView = 'dashboard';
-    let maintenanceNotes = JSON.parse(localStorage.getItem('pcm-maintenance-notes') || 'null') || [];
+    let maintenanceNotes = readStorage('pcm-maintenance-notes', []);
     const defaultTheme = { header: '#ffffff', accent: '#087f83', font: 'DM Sans' };
-    let theme = { ...defaultTheme, ...(JSON.parse(localStorage.getItem('gestao-fabril-theme') || 'null') || {}) };
+    let theme = { ...defaultTheme, ...readStorage('gestao-fabril-theme', {}) };
     let currentDiscipline = 'Mecânica';
     let currentTechnicianDiscipline = 'Elétrica';
     const technicians = [
