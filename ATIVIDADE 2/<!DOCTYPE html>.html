@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema PCM - Protótipo Operacional</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+
+  <div id="screen-login" class="flex min-h-screen items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-2xl">
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <div class="bg-blue-600 p-2.5 rounded-lg text-white">
+          <i data-lucide="wrench"></i>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight">PCM Interface</h1>
+      </div>
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-400 mb-1">Usuário / Matrícula</label>
+          <input type="text" required placeholder="pcm.admin" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-blue-500 text-sm" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-400 mb-1">Senha</label>
+          <input type="password" required placeholder="••••••••" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-blue-500 text-sm" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-sm">
+          Acessar Sistema <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="screen-app" class="hidden min-h-screen flex flex-col">
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+      <div class="flex items-center gap-3">
+        <div class="bg-blue-600 p-2 rounded-lg text-white">
+          <i data-lucide="cpu" class="w-5 h-5"></i>
+        </div>
+        <span class="font-bold text-lg text-slate-100">PCM Enterprise</span>
+      </div>
+      <nav class="flex items-center gap-1 md:gap-2">
+        <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">Dashboard</button>
+        <button onclick="navigate('cadastro')" id="nav-cadastro" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">Cadastro de Ativos</button>
+        <button onclick="navigate('planos')" id="nav-planos" class="nav-btn px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">Planos de Manutenção</button>
+      </nav>
+      <button onclick="handleLogout()" class="text-xs bg-red-950 text-red-400 border border-red-800 px-3 py-1.5 rounded-lg hover:bg-red-900 transition flex items-center gap-1">
+        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sair
+      </button>
+    </header>
+
+    <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
+      
+      <section id="view-dashboard" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ativos Cadastrados</span>
+            <p class="text-2xl font-bold mt-2 text-white">142</p>
+            <span class="text-xs text-emerald-400 mt-1 block">94% catalogados na planta</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Planos Concluídos</span>
+            <p class="text-2xl font-bold mt-2 text-emerald-400">89</p>
+            <span class="text-xs text-slate-400 mt-1 block">Rotas mecânicas e elétricas</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Planos Pendentes</span>
+            <p class="text-2xl font-bold mt-2 text-amber-400">12</p>
+            <span class="text-xs text-slate-400 mt-1 block">Aguardando parada</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ativos da Produção</span>
+            <p class="text-2xl font-bold mt-2 text-blue-400">R$ 4.280.000</p>
+            <span class="text-xs text-slate-400 mt-1 block">Base fiscal cadastrada</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+            <h3 class="font-bold text-sm text-slate-200 mb-4 flex items-center gap-2">
+              <i data-lucide="trending-up" class="w-4 h-4 text-blue-400"></i> Gráficos de Progressão do PCM
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <span>Equipamentos Cadastrados vs. Meta</span>
+                  <span>88%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-blue-500 h-full w-[88%]"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <span>Conformidade de Calibração Periódica</span>
+                  <span>95%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-full w-[95%]"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                  <span>Rotas de Lubrificação Concluídas</span>
+                  <span>74%</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                  <div class="bg-amber-500 h-full w-[74%]"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+            <h3 class="font-bold text-sm text-slate-200 mb-4 flex items-center gap-2">
+              <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i> Resumo de Notas Fiscais e Ativos
+            </h3>
+            <ul class="divide-y divide-slate-800 text-sm">
+              <li class="py-2.5 flex justify-between">
+                <span class="text-slate-400">Valor Total Equipamentos e Peças</span>
+                <span class="font-medium text-slate-200">R$ 8.950.000,00</span>
+              </li>
+              <li class="py-2.5 flex justify-between">
+                <span class="text-slate-400">Peças Sobressalentes em Estoque</span>
+                <span class="font-medium text-slate-200">R$ 1.120.000,00</span>
+              </li>
+              <li class="py-2.5 flex justify-between">
+                <span class="text-slate-400">Equipamentos de Utilidades</span>
+                <span class="font-medium text-slate-200">R$ 3.550.000,00</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-cadastro" class="hidden space-y-6">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+          <h2 class="text-lg font-bold text-white mb-4">Entrada de Equipamentos & Nota Fiscal</h2>
+          <form id="form-asset" onsubmit="saveAsset(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Tag do Equipamento</label>
+              <input id="tag-input" type="text" required placeholder="Ex: BMB-UTIL-01" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Local de Instalação</label>
+              <input id="loc-input" type="text" required placeholder="Ex: Casa de Máquinas - Utilidades" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Disciplina Principal</label>
+              <select id="disc-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+                <option value="Mecânica">Parte Mecânica</option>
+                <option value="Elétrica">Parte Elétrica</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Calibração Periódica</label>
+              <select id="calib-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+                <option value="Sim">Tag com Calibração Periódica</option>
+                <option value="Não">Tag sem Calibração Periódica</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Destinação / Categoria Fiscal</label>
+              <select id="cat-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+                <option value="Produtiva">Equipamentos da Produtiva</option>
+                <option value="Utilidades">Equipamentos de Utilidades</option>
+                <option value="Sobressalente">Peça Sobressalente</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Valor Nota Fiscal (R$)</label>
+              <input id="val-input" type="number" required placeholder="50000" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500" />
+            </div>
+            <div class="md:col-span-3 flex justify-end mt-2">
+              <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-lg text-sm transition flex items-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i> Gravar Equipamento
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <div class="p-4 border-b border-slate-800">
+            <h3 class="font-bold text-sm text-slate-200">Equipamentos Cadastrados na Planta</h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950 text-slate-400 uppercase">
+                <tr>
+                  <th class="p-3">TAG</th>
+                  <th class="p-3">Localização</th>
+                  <th class="p-3">Disciplina</th>
+                  <th class="p-3">Calibração</th>
+                  <th class="p-3">Categoria</th>
+                  <th class="p-3">Valor (NF)</th>
+                </tr>
+              </thead>
+              <tbody id="assets-table-body" class="divide-y divide-slate-800">
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-planos" class="hidden space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+            <div class="flex items-center gap-2 text-amber-400">
+              <i data-lucide="settings" class="w-5 h-5"></i>
+              <h3 class="font-bold text-sm text-slate-200">Rota de Inspeção Mecânica</h3>
+            </div>
+            <p class="text-xs text-slate-400">Inspeções sistemáticas mecânicas e lubrificação operacional.</p>
+            <div class="space-y-2 pt-2">
+              <div class="bg-slate-950 p-3 rounded border border-slate-800 flex justify-between items-center text-xs">
+                <span>Estado da Máquina: <strong>Parada</strong></span>
+                <span class="bg-amber-950 text-amber-400 px-2 py-0.5 rounded">Revisão Interna</span>
+              </div>
+              <div class="bg-slate-950 p-3 rounded border border-slate-800 flex justify-between items-center text-xs">
+                <span>Estado da Máquina: <strong>Rodando</strong></span>
+                <span class="bg-blue-950 text-blue-400 px-2 py-0.5 rounded">Vibração & Temperatura</span>
+              </div>
+              <div class="bg-slate-950 p-3 rounded border border-slate-800 flex justify-between items-center text-xs">
+                <span>Lubrificação (Óleos & Graxas)</span>
+                <span class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">Em Execução</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+            <div class="flex items-center gap-2 text-blue-400">
+              <i data-lucide="zap" class="w-5 h-5"></i>
+              <h3 class="font-bold text-sm text-slate-200">Rota de Inspeção Elétrica</h3>
+            </div>
+            <p class="text-xs text-slate-400">Atendimento aos circuitos, painéis e motores da planta.</p>
+            <div class="space-y-2 pt-2">
+              <div class="bg-slate-950 p-3 rounded border border-slate-800 flex justify-between items-center text-xs">
+                <span>Estado do Painel: <strong>Parado</strong></span>
+                <span class="bg-red-950 text-red-400 px-2 py-0.5 rounded">Reaperto & Limpeza</span>
+              </div>
+              <div class="bg-slate-950 p-3 rounded border border-slate-800 flex justify-between items-center text-xs">
+                <span>Estado do Circuito: <strong>Rodando</strong></span>
+                <span class="bg-blue-950 text-blue-400 px-2 py-0.5 rounded">Termografia</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+            <div class="flex items-center gap-2 text-emerald-400">
+              <i data-lucide="gauge" class="w-5 h-5"></i>
+              <h3 class="font-bold text-sm text-slate-200">Rota de Calibração</h3>
+            </div>
+            <p class="text-xs text-slate-400">Garantia metrológica de sensores, manômetros e transmissores.</p>
+            <div class="space-y-2 pt-2">
+              <div class="bg-slate-950 p-3 rounded border border-slate-800 flex justify-between items-center text-xs">
+                <span>Calibração Periódica de Manômetros</span>
+                <span class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">Conforme</span>
+              </div>
+              <div class="bg-slate-950 p-3 rounded border border-slate-800 flex justify-between items-center text-xs">
+                <span>Calibração Transmissores de Pressão</span>
+                <span class="bg-amber-950 text-amber-400 px-2 py-0.5 rounded">Programado</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Estado inicial de dados para o protótipo
+    const initialAssets = [
+      { tag: 'MTR-REC-01', loc: 'Linha de Revestimento', disc: 'Elétrica', calib: 'Não', cat: 'Produtiva', val: '75000' },
+      { tag: 'CMP-UTL-02', loc: 'Sala de Ar Comprimido', disc: 'Mecânica', calib: 'Sim', cat: 'Utilidades', val: '120000' },
+      { tag: 'ROL-ESER-04', loc: 'Almoxarifado Central', disc: 'Mecânica', calib: 'Não', cat: 'Sobressalente', val: '4500' }
+    ];
+
+    let assets = [...initialAssets];
+
+    function renderAssets() {
+      const tbody = document.getElementById('assets-table-body');
+      tbody.innerHTML = assets.map(item => `
+        <tr class="hover:bg-slate-800/50">
+          <td class="p-3 font-semibold text-slate-200">${item.tag}</td>
+          <td class="p-3 text-slate-400">${item.loc}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] ${item.disc === 'Elétrica' ? 'bg-blue-950 text-blue-400' : 'bg-amber-950 text-amber-400'}">${item.disc}</span></td>
+          <td class="p-3 text-slate-400">${item.calib}</td>
+          <td class="p-3 text-slate-400">${item.cat}</td>
+          <td class="p-3 font-mono text-emerald-400">R$ ${Number(item.val).toLocaleString('pt-BR')}</td>
+        </tr>
+      `).join('');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      document.getElementById('screen-login').classList.add('hidden');
+      document.getElementById('screen-app').classList.remove('hidden');
+      navigate('dashboard');
+      renderAssets();
+    }
+
+    function handleLogout() {
+      document.getElementById('screen-app').classList.add('hidden');
+      document.getElementById('screen-login').classList.remove('hidden');
+    }
+
+    function navigate(viewName) {
+      ['dashboard', 'cadastro', 'planos'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        document.getElementById(`nav-${v}`).classList.remove('bg-slate-800', 'text-white');
+      });
+      document.getElementById(`view-${viewName}`).classList.remove('hidden');
+      document.getElementById(`nav-${viewName}`).classList.add('bg-slate-800', 'text-white');
+    }
+
+    function saveAsset(e) {
+      e.preventDefault();
+      const newAsset = {
+        tag: document.getElementById('tag-input').value,
+        loc: document.getElementById('loc-input').value,
+        disc: document.getElementById('disc-input').value,
+        calib: document.getElementById('calib-input').value,
+        cat: document.getElementById('cat-input').value,
+        val: document.getElementById('val-input').value
+      };
+      assets.unshift(newAsset);
+      renderAssets();
+      document.getElementById('form-asset').reset();
+      alert('Equipamento registrado no sistema com sucesso!');
+    }
+
+    window.onload = () => {
+      lucide.createIcons();
+      renderAssets();
+    };
+  </script>
+</body>
+</html>
