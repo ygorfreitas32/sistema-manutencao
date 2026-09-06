@@ -28,7 +28,7 @@
     .login-aside h1 { font: 700 clamp(36px, 5vw, 68px)/.98 "Space Grotesk", sans-serif; max-width: 540px; margin: 22px 0; letter-spacing: -.04em; }
     .login-aside p { color: #c2e0dc; max-width: 400px; line-height: 1.7; }
     .login-aside .mark { display: inline-grid; place-items: center; width: 44px; height: 44px; background: #d6f0e9; color: var(--teal-dark); border-radius: 12px; margin-bottom: 40px; }
-    .login-logo { width: min(100%, 420px); height: auto; display: block; margin-bottom: 30px; border-radius: 18px; }
+    .login-logo { width: min(100%, 280px); height: auto; display: block; margin-bottom: 30px; border-radius: 22px; }
     .login-card { display: grid; place-items: center; padding: 28px; }
     .login-form { width: min(100%, 390px); background: var(--white); padding: clamp(25px, 5vw, 46px); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 18px; }
     h2, h3, p { margin-top: 0; } h1, h2, h3, .brand, .metric strong, .login-aside h1 { font-family: var(--heading-font); }
@@ -42,7 +42,7 @@
     .app { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
     .sidebar { padding: 24px 16px; background: #102d35; color: #d8eae7; display: flex; flex-direction: column; }
     .brand { display: flex; align-items: center; gap: 10px; padding: 0 12px 34px; font: 700 18px "Space Grotesk", sans-serif; color: white; }
-    .brand-icon { width: 34px; height: 34px; display: grid; place-items: center; background: transparent; border-radius: 9px; color: #fff; overflow: hidden; }
+    .brand-icon { width: 34px; height: 34px; display: grid; place-items: center; background: var(--orange); border-radius: 9px; color: #fff; overflow: hidden; }
     .brand-logo { width: 100%; height: 100%; display: block; }
     .nav { display: grid; gap: 5px; } .nav button { color: #a9c6c3; background: transparent; border: 0; border-radius: 8px; padding: 12px; text-align: left; display: flex; align-items: center; gap: 11px; font-weight: 600; font-size: 13px; }
     .nav button:hover, .nav button.active { color: white; background: rgba(255,255,255,.12); } .sidebar-footer { margin-top: auto; border-top: 1px solid rgba(255,255,255,.12); padding: 18px 12px 0; }
@@ -134,12 +134,12 @@
 </head>
 <body>
   <section id="login-screen" class="login">
-    <div class="login-aside"><img class="login-logo" src="app_logo_gestao_fabril.svg" alt="Logo Gestão Fabril" /><div class="eyebrow">GESTAO FABRIL</div><h1>A sua fábrica controlada pelo seu sistema de gestão</h1><p>Organize ativos, equipes e rotinas de manutenção em um único sistema.</p></div>
+    <div class="login-aside"><img class="login-logo" src="app_icon_gestao_fabril.svg" alt="Logo Gestão Fabril" /><div class="eyebrow">GESTAO FABRIL</div><h1>A sua fábrica controlada pelo seu sistema de gestão</h1><p>Organize ativos, equipes e rotinas de manutenção em um único sistema.</p></div>
     <div class="login-card"><form id="login-form" class="login-form"><h2>Entrar no sistema</h2><p>Acesse o centro de operações da sua planta.</p><div class="field"><label for="username">USUÁRIO / MATRÍCULA</label><input id="username" required placeholder="pcm.admin" autocomplete="username" /></div><div class="field"><label for="password">SENHA</label><input id="password" type="password" required placeholder="Sua senha" autocomplete="current-password" /></div><button class="btn btn-primary" type="submit" style="width:100%; margin-top:8px">Acessar sistema <i data-lucide="arrow-up-right" size="17"></i></button></form></div>
   </section>
 
   <section id="app-screen" class="app hidden">
-    <aside class="sidebar"><div class="brand"><div class="brand-icon"><img class="brand-logo" src="app_mark_gestao_fabril.svg" alt="" /></div><span>GESTAO FABRIL</span></div><nav class="nav"><button data-view="dashboard" class="active"><i data-lucide="layout-dashboard" size="17"></i><span>Dashboard</span></button><button data-view="assets"><i data-lucide="boxes" size="17"></i><span>Ativos</span></button><button data-view="plans"><i data-lucide="clipboard-check" size="17"></i><span>Planos</span></button><button data-view="maintenance-notes"><i data-lucide="file-plus-2" size="17"></i><span>Notas De Manutenção</span></button><button data-view="technicians"><i data-lucide="users-round" size="17"></i><span>Técnicos</span></button><button data-view="assistant"><i data-lucide="sparkles" size="17"></i><span>Assistente IA</span></button><button data-view="audit"><i data-lucide="history" size="17"></i><span>Auditoria</span></button><button data-view="settings"><i data-lucide="sliders-horizontal" size="17"></i><span>Configurações</span></button></nav><div class="sidebar-footer"><div class="user"><div class="avatar">YA</div><div><strong>Ygor A.</strong><br><small style="color:#91b4b0">Administrador</small></div></div></div></aside>
+    <aside class="sidebar"><div class="brand"><div class="brand-icon"><img class="brand-logo" src="app_icon_gestao_fabril.svg" alt="" /></div><span>GESTAO FABRIL</span></div><nav class="nav"><button data-view="dashboard" class="active"><i data-lucide="layout-dashboard" size="17"></i><span>Dashboard</span></button><button data-view="assets"><i data-lucide="boxes" size="17"></i><span>Ativos</span></button><button data-view="plans"><i data-lucide="clipboard-check" size="17"></i><span>Planos</span></button><button data-view="maintenance-notes"><i data-lucide="file-plus-2" size="17"></i><span>Notas De Manutenção</span></button><button data-view="technicians"><i data-lucide="users-round" size="17"></i><span>Técnicos</span></button><button data-view="assistant"><i data-lucide="sparkles" size="17"></i><span>Assistente IA</span></button><button data-view="audit"><i data-lucide="history" size="17"></i><span>Auditoria</span></button><button data-view="settings"><i data-lucide="sliders-horizontal" size="17"></i><span>Configurações</span></button></nav><div class="sidebar-footer"><div class="user"><div class="avatar">YA</div><div><strong>Ygor A.</strong><br><small style="color:#91b4b0">Administrador</small></div></div></div></aside>
     <div class="content"><header class="topbar"><div><h1 id="page-title">Visão geral</h1><p>Quarta-feira, 02 de setembro de 2026 · Planta principal</p></div><button id="logout" class="btn btn-quiet"><i data-lucide="log-out" size="16"></i><span>Sair</span></button></header><main id="main-content" class="page"></main></div>
   </section>
   <div id="modal-root"></div><div id="toast-root"></div>
