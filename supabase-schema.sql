@@ -31,7 +31,7 @@ create table if not exists public.maintenance_plans (
 
 create table if not exists public.maintenance_notes (
   id uuid primary key default gen_random_uuid(),
-  type text not null check (type in ('Corretiva', 'Mecânica', 'Calibração', 'Elétrica')),
+  type text not null check (type in ('Corretiva Mecânica', 'Corretiva Elétrica', 'Corretiva Calibração', 'Mecânica', 'Calibração', 'Elétrica')),
   priority text not null check (priority in ('Muito urgente', 'Urgente', 'Pode esperar', 'Programada')),
   equipment text not null,
   failure text not null,
