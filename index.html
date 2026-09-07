@@ -1,294 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f172a" />
-  <title>GESTÃO DE MANUTENÇÃO FABRIL | Centro de Operações</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    :root {
-      --ink: #10202b; --muted: #667782; --line: #dbe5e7; --paper: #f5f8f7;
-      --white: #fff; --teal: #087f83; --teal-dark: #075e64; --mint: #d9f1ea;
-      --orange: #e68b40; --red: #c95555; --shadow: 0 14px 35px rgba(16, 32, 43, .08);
-      --header-bg: rgba(255,255,255,.82); --body-font: "DM Sans", sans-serif; --heading-font: "Space Grotesk", sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--body-font); }
-    button, input, select { font: inherit; }
-    button { cursor: pointer; }
-    .hidden { display: none !important; }
-    .login { min-height: 100vh; display: grid; grid-template-columns: minmax(320px, 1fr) minmax(420px, 48%); background: #e8f1ef; }
-    .login-aside { padding: clamp(28px, 7vw, 100px); background: linear-gradient(145deg, #0b5961, #0b353f); color: white; position: relative; overflow: hidden; }
-    .login-aside::after { content: ""; position: absolute; width: 380px; height: 380px; border: 1px solid rgba(255,255,255,.16); border-radius: 50%; right: -150px; bottom: -150px; box-shadow: 0 0 0 42px rgba(255,255,255,.04), 0 0 0 84px rgba(255,255,255,.03); }
-    .eyebrow { color: #94d9d0; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
-    .login-aside h1 { font: 700 clamp(36px, 5vw, 68px)/.98 "Space Grotesk", sans-serif; max-width: 540px; margin: 22px 0; letter-spacing: -.04em; }
-    .login-aside p { color: #c2e0dc; max-width: 400px; line-height: 1.7; }
-    .login-aside .mark { display: inline-grid; place-items: center; width: 44px; height: 44px; background: #d6f0e9; color: var(--teal-dark); border-radius: 12px; margin-bottom: 40px; }
-    .login-card { display: grid; place-items: center; padding: 28px; }
-    .login-form { width: min(100%, 390px); background: var(--white); padding: clamp(25px, 5vw, 46px); border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 18px; }
-    h2, h3, p { margin-top: 0; } h1, h2, h3, .brand, .metric strong, .login-aside h1 { font-family: var(--heading-font); }
-    .login-form h2 { font-size: 28px; margin-bottom: 8px; } .login-form > p { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
-    .field { display: grid; gap: 7px; margin-bottom: 16px; } label { font-size: 12px; font-weight: 700; color: var(--muted); }
-    input, select { width: 100%; border: 1px solid var(--line); background: #fbfdfc; color: var(--ink); padding: 12px 13px; border-radius: 9px; outline: none; transition: .2s; }
-    input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(8,127,131,.12); }
-    .btn { border: 0; border-radius: 9px; padding: 11px 15px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform .2s, background .2s; }
-    .btn:hover { transform: translateY(-1px); } .btn-primary { color: white; background: var(--teal); } .btn-primary:hover { background: var(--teal-dark); }
-    .btn-quiet { background: #edf4f2; color: var(--teal-dark); } .btn-danger { background: #fff0ee; color: var(--red); }
-    .app { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
-    .sidebar { padding: 24px 16px; background: #102d35; color: #d8eae7; display: flex; flex-direction: column; }
-    .brand { display: flex; align-items: center; gap: 10px; padding: 0 12px 34px; font: 700 18px "Space Grotesk", sans-serif; color: white; }
-    .brand-icon { width: 34px; height: 34px; display: grid; place-items: center; background: var(--orange); border-radius: 9px; color: #fff; overflow: hidden; }
-    .brand-logo { width: 100%; height: 100%; display: block; }
-    .nav { display: grid; gap: 5px; } .nav button { color: #a9c6c3; background: transparent; border: 0; border-radius: 8px; padding: 12px; text-align: left; display: flex; align-items: center; gap: 11px; font-weight: 600; font-size: 13px; }
-    .nav button:hover, .nav button.active { color: white; background: rgba(255,255,255,.12); } .sidebar-footer { margin-top: auto; border-top: 1px solid rgba(255,255,255,.12); padding: 18px 12px 0; }
-    .user { display: flex; align-items: center; gap: 10px; font-size: 12px; } .avatar { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; background: #d9f1ea; color: var(--teal-dark); font-weight: 700; }
-    .content { min-width: 0; } .topbar { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 15px clamp(18px, 4vw, 48px); background: var(--header-bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 3; backdrop-filter: blur(10px); }
-    .topbar h1 { font: 700 21px "Space Grotesk", sans-serif; margin: 0; } .topbar p { color: var(--muted); font-size: 12px; margin: 4px 0 0; }
-    .page { max-width: 1440px; margin: auto; padding: clamp(20px, 4vw, 45px); animation: appear .35s ease-out; } @keyframes appear { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin-bottom: 22px; } .section-head h2 { font-size: 27px; margin-bottom: 5px; } .section-head p { color: var(--muted); font-size: 13px; margin: 0; }
-    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; } .metric, .panel { background: var(--white); border: 1px solid var(--line); border-radius: 13px; box-shadow: 0 4px 15px rgba(16,32,43,.025); }
-    .metric { padding: 19px; position: relative; overflow: hidden; } .metric::after { content: ""; position: absolute; width: 72px; height: 72px; right: -26px; bottom: -28px; background: var(--mint); border-radius: 50%; }
-    .metric-label { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; font-size: 10px; } .metric strong { display: block; font: 700 27px "Space Grotesk", sans-serif; margin: 9px 0 4px; } .metric small { color: var(--muted); font-size: 11px; } .metric.teal strong { color: var(--teal); } .metric.orange strong { color: var(--orange); }
-    .grid-two { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; } .panel { padding: 22px; } .panel-title { display: flex; align-items: center; gap: 9px; margin-bottom: 22px; } .panel-title h3 { font-size: 15px; margin: 0; } .icon-teal { color: var(--teal); }
-    .progress-row { display: grid; gap: 8px; margin: 18px 0; } .progress-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; } .progress { height: 9px; border-radius: 8px; background: #e6efed; overflow: hidden; } .progress span { display: block; height: 100%; border-radius: inherit; background: var(--teal); } .progress.orange span { background: var(--orange); }
-    .finance { display: grid; gap: 0; } .finance div { display: flex; justify-content: space-between; gap: 15px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 12px; } .finance div:last-child { border: 0; } .finance span { color: var(--muted); }
-    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; } .search { flex: 1 1 230px; position: relative; } .search input { padding-left: 38px; } .search svg { position: absolute; left: 13px; top: 12px; color: var(--muted); width: 17px; }
-    .table-wrap { overflow-x: auto; } table { width: 100%; border-collapse: collapse; min-width: 710px; font-size: 12px; } th { text-align: left; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-size: 10px; padding: 13px 12px; border-bottom: 1px solid var(--line); } td { padding: 15px 12px; border-bottom: 1px solid #edf2f1; } tbody tr:hover { background: #f7fbfa; } .tag { font-weight: 700; } .badge { display: inline-flex; padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; } .badge.teal { background: var(--mint); color: var(--teal-dark); } .badge.orange { background: #fff0dc; color: #a66020; } .badge.gray { background: #eef2f2; color: #637379; }
-    .empty { text-align: center; color: var(--muted); padding: 35px !important; } .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; } .plan { border-top: 4px solid var(--teal); } .plan.orange { border-top-color: var(--orange); } .plan.red { border-top-color: var(--red); } .plan p { color: var(--muted); font-size: 12px; line-height: 1.5; } .checklist { display: grid; gap: 9px; padding-top: 9px; } .check { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #f5f9f8; padding: 10px; border-radius: 7px; font-size: 11px; }
-    .modal-backdrop { position: fixed; inset: 0; z-index: 10; background: rgba(9,31,37,.5); display: grid; place-items: center; padding: 18px; } .modal { width: min(100%, 620px); max-height: 90vh; overflow: auto; background: white; border-radius: 14px; padding: 24px; box-shadow: 0 24px 70px rgba(0,0,0,.2); } .modal-head { display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; } .modal-head h2 { margin: 0; font-size: 21px; } .close { border: 0; background: transparent; color: var(--muted); padding: 4px; } .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; } .form-grid .full { grid-column: 1 / -1; } .modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 22px; }
-    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 20; background: #153d42; color: white; padding: 13px 17px; border-radius: 9px; box-shadow: var(--shadow); font-size: 13px; animation: appear .25s ease-out; }
-    .assistant { display: grid; grid-template-columns: minmax(0, .85fr) minmax(340px, 1.15fr); gap: 18px; }
-    .assistant-copy { background: linear-gradient(145deg, #0b5961, #0b353f); color: white; border-radius: 13px; padding: 28px; min-height: 410px; }
-    .assistant-copy h3 { font-size: 25px; margin: 18px 0 10px; }
-    .assistant-copy p { color: #c2e0dc; font-size: 13px; line-height: 1.6; }
-    .assistant-list { display: grid; gap: 10px; margin-top: 28px; }
-    .assistant-list div { display: flex; gap: 9px; align-items: center; color: #d8eae7; font-size: 12px; }
-    .assistant-list svg { color: #f0b56f; }
-    .chat-panel { display: flex; flex-direction: column; min-height: 410px; }
-    .chat-log { flex: 1; display: grid; align-content: start; gap: 12px; min-height: 220px; max-height: 310px; overflow-y: auto; padding: 2px 2px 16px; }
-    .chat-message { max-width: 88%; padding: 12px 14px; border-radius: 10px; font-size: 12px; line-height: 1.55; white-space: pre-line; }
-    .chat-message.ai { background: #edf6f4; color: var(--ink); justify-self: start; }
-    .chat-message.user { background: var(--teal); color: white; justify-self: end; }
-    .chat-form { display: flex; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
-    .chat-form input { min-width: 0; }
-    .reference-box { border: 1px dashed #a9c9c4; background: #f3faf8; border-radius: 9px; padding: 14px; display: grid; gap: 9px; margin-bottom: 16px; }
-    .reference-box small { color: var(--muted); font-size: 11px; }
-    .reference-preview { max-width: 100%; max-height: 130px; object-fit: contain; border-radius: 7px; display: none; }
-    .maintenance-order-output { min-height: 330px; max-height: 520px; overflow: auto; margin: 16px 0 0; padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: #fffef9; color: #182d31; font: 12px/1.65 "Courier New", monospace; white-space: pre-wrap; }
-    @media print { .sidebar, .topbar, .section-head, .assistant-copy, #maintenance-order-form, .panel-title { display: none !important; } .app, .content, .page, .assistant, .chat-panel { display: block !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; } .maintenance-order-output { display: block !important; max-height: none !important; border: 0 !important; padding: 0 !important; margin: 0 !important; background: white !important; color: black !important; } }
-    .plan-tabs { display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
-    .plan-tab { border: 0; background: transparent; color: var(--muted); padding: 11px 13px; font-size: 12px; font-weight: 700; white-space: nowrap; border-bottom: 2px solid transparent; }
-    .plan-tab.active { color: var(--teal-dark); border-color: var(--teal); }
-    .schedule { display: grid; gap: 10px; }
-    .schedule-row { display: grid; grid-template-columns: 1.35fr .8fr .75fr auto; gap: 12px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 9px; background: #fbfdfc; font-size: 12px; }
-    .schedule-row strong { display: block; margin-bottom: 4px; }
-    .schedule-row small { color: var(--muted); }
-    .date-free { color: var(--teal-dark); font-size: 11px; font-weight: 700; margin-top: 18px; padding: 11px; background: var(--mint); border-radius: 8px; }
-    .schedule-action { padding: 8px 10px; font-size: 11px; }
-    .audit-list { display: grid; gap: 10px; }
-    .audit-row { display: grid; grid-template-columns: 145px 1fr auto; gap: 14px; align-items: center; border: 1px solid var(--line); border-radius: 9px; padding: 14px; background: #fbfdfc; font-size: 12px; }
-    .audit-row small { color: var(--muted); display: block; margin-top: 4px; }
-    .audit-row .btn { padding: 8px 10px; font-size: 11px; }
-    .technician-tabs { display: flex; gap: 8px; overflow-x: auto; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
-    .technician-tab { border: 0; background: transparent; color: var(--muted); padding: 11px 13px; font-size: 12px; font-weight: 700; white-space: nowrap; border-bottom: 2px solid transparent; }
-    .technician-tab.active { color: var(--teal-dark); border-color: var(--teal); }
-    .technician-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .technician-card { border: 1px solid var(--line); border-radius: 10px; padding: 15px; background: #fbfdfc; }
-    .technician-card header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
-    .technician-card h3 { font-size: 14px; margin: 0; }
-    .availability { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
-    .availability-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
-    .availability-dot.off { background: var(--red); }
-    .task-list { display: grid; gap: 7px; }
-    .task-item { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 9px; border-radius: 7px; background: #f1f7f5; font-size: 11px; }
-    .task-item span { color: var(--muted); }
-    .maintenance-notes { display: grid; grid-template-columns: minmax(300px, .8fr) minmax(0, 1.2fr); gap: 18px; }
-    .maintenance-form { align-self: start; }
-    textarea { width: 100%; min-height: 100px; resize: vertical; border: 1px solid var(--line); background: #fbfdfc; color: var(--ink); padding: 12px 13px; border-radius: 9px; outline: none; font: inherit; line-height: 1.45; }
-    textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(8,127,131,.12); }
-    .note-list { display: grid; gap: 11px; }
-    .note-card { border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 9px; padding: 15px; background: #fbfdfc; }
-    .note-card.critical { border-left-color: var(--red); }
-    .note-card header { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-    .note-card h3 { margin: 0 0 4px; font-size: 14px; }
-    .note-card small { color: var(--muted); font-size: 11px; }
-    .note-card p { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 10px 0 0; white-space: pre-line; }
-    .note-meta { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
-    .note-actions { display: flex; justify-content: flex-end; gap: 7px; margin-top: 13px; }
-    .note-actions .btn { padding: 7px 9px; font-size: 11px; }
-    .settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .settings-preview { grid-column: 1 / -1; padding: 20px; border-radius: 10px; color: white; background: var(--header-bg); }
-    .settings-preview strong { display: block; font-family: var(--heading-font); margin-bottom: 5px; }
-    .color-control { display: flex; align-items: center; gap: 10px; }
-    .color-control input[type="color"] { width: 52px; height: 42px; padding: 4px; cursor: pointer; }
-    .settings-actions { display: flex; justify-content: flex-end; gap: 9px; grid-column: 1 / -1; }
-    .route-list { display: grid; gap: 12px; }
-    .route-card { border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 9px; padding: 16px; background: #fbfdfc; }
-    .route-card.urgent { border-left-color: var(--orange); }
-    .route-card.critical { border-left-color: var(--red); }
-    .route-card header { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-    .route-card h3 { margin: 0 0 4px; font-size: 15px; }
-    .route-card small, .route-card p { color: var(--muted); font-size: 12px; }
-    .route-card p { line-height: 1.5; margin: 10px 0; }
-    .route-meta { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
-    .route-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-    .route-actions .btn { padding: 8px 10px; font-size: 11px; }
-    @media (max-width: 700px) { .settings-grid { grid-template-columns: 1fr; } }
-    @media (max-width: 850px) { .maintenance-notes { grid-template-columns: 1fr; } }
-    @media (max-width: 850px) { .technician-grid { grid-template-columns: 1fr; } }
-    @media (max-width: 980px) { .app { grid-template-columns: 76px 1fr; } .sidebar { padding: 19px 10px; } .brand { justify-content: center; padding: 0 0 30px; } .brand span, .nav button span, .sidebar-footer { display: none; } .nav button { justify-content: center; } .grid-two { grid-template-columns: 1fr; } }
-    @media (max-width: 700px) { .login { display: block; } .login-aside { min-height: 255px; padding: 30px 24px; } .login-aside .mark { margin-bottom: 20px; } .login-aside h1 { font-size: 38px; margin: 12px 0; } .login-aside p { display: none; } .login-card { padding: 22px 16px; } .app { display: block; } .sidebar { position: fixed; bottom: 0; left: 0; right: 0; height: 66px; z-index: 5; padding: 7px 12px; } .brand, .sidebar-footer { display: none; } .nav { display: flex; justify-content: space-around; } .nav button { padding: 10px 12px; } .nav button span { display: block; font-size: 10px; } .nav button svg { width: 18px; } .content { padding-bottom: 64px; } .topbar { padding: 14px 17px; } .topbar p { display: none; } .metrics { grid-template-columns: 1fr 1fr; gap: 9px; } .metric { padding: 14px; } .metric strong { font-size: 22px; } .section-head { align-items: start; flex-direction: column; } .plans { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } .form-grid .full { grid-column: auto; } .assistant { grid-template-columns: 1fr; } .assistant-copy { min-height: auto; } .chat-panel { min-height: 430px; } .audit-row { grid-template-columns: 1fr; gap: 8px; } }
-  </style>
-</head>
-<body>
-  <section id="login-screen" class="login">
-    <div class="login-aside"><div class="mark"><i data-lucide="activity"></i></div><div class="eyebrow">GESTÃO DE MANUTENÇÃO FABRIL</div><h1>A sua fábrica controlada pelo seu sistema de gestão</h1><p>Organize ativos, equipes e rotinas de manutenção em um único sistema.</p></div>
-    <div class="login-card"><form id="login-form" class="login-form"><h2>Entrar no sistema</h2><p>Acesse o centro de operações da sua planta.</p><div class="field"><label for="username">USUÁRIO / MATRÍCULA</label><input id="username" required placeholder="pcm.admin" autocomplete="username" /></div><div class="field"><label for="password">SENHA</label><input id="password" type="password" required placeholder="Sua senha" autocomplete="current-password" /></div><div class="field"><label for="login-role">PERFIL DE ACESSO</label><select id="login-role" required><option value="Técnico">Técnico</option><option value="Analista">Analista</option><option value="Gestão">Gestão</option></select></div><button class="btn btn-primary" type="submit" style="width:100%; margin-top:8px">Acessar sistema <i data-lucide="arrow-up-right" size="17"></i></button></form></div>
-  </section>
+  <head>
+    <!-- Configurações básicas da página e arquivos externos. -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>GESTÃO DE MANUTENÇÃO FABRIL | Centro de Operações</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- Tela inicial: o usuário escolhe nome, senha e perfil de acesso. -->
+    <section id="login-screen" class="login">
+      <div class="login-aside">
+        <div class="mark"><i data-lucide="activity"></i></div>
+        <div class="eyebrow">GESTÃO DE MANUTENÇÃO FABRIL</div>
+        <h1>A sua fábrica controlada pelo seu sistema de gestão</h1>
+        <p>
+          Organize ativos, equipes e rotinas de manutenção em um único sistema.
+        </p>
+      </div>
+      <div class="login-card">
+        <form id="login-form" class="login-form">
+          <h2>Entrar no sistema</h2>
+          <p>Acesse o centro de operações da sua planta.</p>
+          <div class="field">
+            <label for="username">USUÁRIO / MATRÍCULA</label
+            ><input
+              id="username"
+              required
+              placeholder="pcm.admin"
+              autocomplete="username"
+            />
+          </div>
+          <div class="field">
+            <label for="password">SENHA</label
+            ><input
+              id="password"
+              type="password"
+              required
+              placeholder="Sua senha"
+              autocomplete="current-password"
+            />
+          </div>
+          <div class="field">
+            <label for="login-role">PERFIL DE ACESSO</label
+            ><select id="login-role" required>
+              <option value="Técnico">Técnico</option>
+              <option value="Analista">Analista</option>
+              <option value="Gestão">Gestão</option>
+            </select>
+          </div>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            style="width: 100%; margin-top: 8px"
+          >
+            Acessar sistema <i data-lucide="arrow-up-right" size="17"></i>
+          </button>
+        </form>
+      </div>
+    </section>
 
-  <section id="app-screen" class="app hidden">
-    <aside class="sidebar"><div class="brand"><div class="brand-icon"><i data-lucide="activity" size="18"></i></div><span>GESTÃO DE MANUTENÇÃO FABRIL</span></div><nav class="nav"><button data-view="dashboard" class="active"><i data-lucide="layout-dashboard" size="17"></i><span>Dashboard</span></button><button data-view="assets"><i data-lucide="boxes" size="17"></i><span>Ativos</span></button><button data-view="plans"><i data-lucide="clipboard-check" size="17"></i><span>Planos</span></button><button data-view="maintenance-notes"><i data-lucide="file-plus-2" size="17"></i><span>Notas De Manutenção</span></button><button data-view="technicians"><i data-lucide="users-round" size="17"></i><span>Técnicos</span></button><button data-view="assistant"><i data-lucide="sparkles" size="17"></i><span>Assistente IA</span></button><button data-view="audit"><i data-lucide="history" size="17"></i><span>Auditoria</span></button><button data-view="settings"><i data-lucide="sliders-horizontal" size="17"></i><span>Configurações</span></button></nav><div class="sidebar-footer"><div class="user"><div class="avatar">YA</div><div><strong>Ygor A.</strong><br><small style="color:#91b4b0">Administrador</small></div></div></div></aside>
-    <div class="content"><header class="topbar"><div><h1 id="page-title">Visão geral</h1><p>Quarta-feira, 02 de setembro de 2026 · Planta principal</p></div><button id="logout" class="btn btn-quiet"><i data-lucide="log-out" size="16"></i><span>Sair</span></button></header><main id="main-content" class="page"></main></div>
-  </section>
-  <div id="modal-root"></div><div id="toast-root"></div>
+    <!-- Aplicação principal: começa escondida e aparece após o login. -->
+    <section id="app-screen" class="app hidden">
+      <!-- Menu lateral com as áreas disponíveis para cada perfil. -->
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-icon"><i data-lucide="activity" size="18"></i></div>
+          <span>GESTÃO DE MANUTENÇÃO FABRIL</span>
+        </div>
+        <nav class="nav">
+          <button data-view="dashboard" class="active">
+            <i data-lucide="layout-dashboard" size="17"></i
+            ><span>Dashboard</span></button
+          ><button data-view="assets">
+            <i data-lucide="boxes" size="17"></i><span>Ativos</span></button
+          ><button data-view="plans">
+            <i data-lucide="clipboard-check" size="17"></i
+            ><span>Planos</span></button
+          ><button data-view="maintenance-notes">
+            <i data-lucide="file-plus-2" size="17"></i
+            ><span>Notas De Manutenção</span></button
+          ><button data-view="technicians">
+            <i data-lucide="users-round" size="17"></i
+            ><span>Técnicos</span></button
+          ><button data-view="assistant">
+            <i data-lucide="sparkles" size="17"></i
+            ><span>Assistente IA</span></button
+          ><button data-view="audit">
+            <i data-lucide="history" size="17"></i
+            ><span>Auditoria</span></button
+          ><button data-view="settings">
+            <i data-lucide="sliders-horizontal" size="17"></i
+            ><span>Configurações</span>
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user">
+            <div class="avatar">YA</div>
+            <div>
+              <strong>Ygor A.</strong><br /><small style="color: #91b4b0"
+                >Administrador</small
+              >
+            </div>
+          </div>
+        </div>
+      </aside>
+      <div class="content">
+        <!-- Barra superior fixa e área onde o JavaScript monta a tela atual. -->
+        <header class="topbar">
+          <div>
+            <h1 id="page-title">Visão geral</h1>
+            <p>Quarta-feira, 02 de setembro de 2026 · Planta principal</p>
+          </div>
+          <button id="logout" class="btn btn-quiet">
+            <i data-lucide="log-out" size="16"></i><span>Sair</span>
+          </button>
+        </header>
+        <main id="main-content" class="page"></main>
+      </div>
+    </section>
+    <!-- Pontos de montagem para janelas modais e mensagens temporárias. -->
+    <div id="modal-root"></div>
+    <div id="toast-root"></div>
 
-  <script>
-    const seedAssets = [
-      { id: 1, tag: 'MTR-REC-01', name: 'Motor de acionamento', loc: 'Linha de Revestimento', disc: 'Elétrica', calib: 'Não', cat: 'Produtiva', val: 75000 },
-      { id: 2, tag: 'CMP-UTL-02', name: 'Compressor de ar', loc: 'Sala de Ar Comprimido', disc: 'Mecânica', calib: 'Sim', cat: 'Utilidades', val: 120000 },
-      { id: 3, tag: 'ROL-ESER-04', name: 'Rolamento sobressalente', loc: 'Almoxarifado Central', disc: 'Mecânica', calib: 'Não', cat: 'Sobressalente', val: 4500 },
-      { id: 4, tag: 'BMB-ETA-08', name: 'Bomba de tratamento', loc: 'Estação de Tratamento', disc: 'Mecânica', calib: 'Sim', cat: 'Utilidades', val: 89000 }
-    ];
-    const catalogAssets = [
-      { tag: 'MM-01', loc: 'Oficina Elétrica - Bancada 01', disc: 'Elétrica', cat: 'Instrumento de Medição', name: 'Instrumento de Medição', val: 1850 },
-      { tag: 'AC-01', loc: 'Sala de Painéis - CCM 01', disc: 'Elétrica', cat: 'Alicate Amperímetro', name: 'Alicate Amperímetro', val: 2400 },
-      { tag: 'MG-01', loc: 'Subestação Principal', disc: 'Elétrica', cat: 'Megômetro / Testador de Isolação', name: 'Megômetro / Testador de Isolação', val: 8900 },
-      { tag: 'TC-01', loc: 'Utilidades - Compressores', disc: 'Elétrica', cat: 'Câmera Termográfica', name: 'Câmera Termográfica', val: 14500 },
-      { tag: 'ST-01', loc: 'Oficina Elétrica - Armário E', disc: 'Elétrica', cat: 'Soprador Térmico Industrial', name: 'Soprador Térmico Industrial', val: 420 },
-      { tag: 'FE-01', loc: 'Linha de Montagem 02', disc: 'Elétrica', cat: 'Ferro de Solda / Estação ESD', name: 'Ferro de Solda / Estação ESD', val: 980 },
-      { tag: 'CM-01', loc: 'Oficina Mecânica - Painel 01', disc: 'Mecânica', cat: 'Jogo de Chaves Combinadas', name: 'Jogo de Chaves Combinadas', val: 1250 },
-      { tag: 'TQ-01', loc: 'Oficina Mecânica - Armário M', disc: 'Mecânica', cat: 'Torquímetro de Estalo', name: 'Torquímetro de Estalo', val: 1650 },
-      { tag: 'SM-01', loc: 'Galpão de Bombas - Setor A', disc: 'Mecânica', cat: 'Sacador de Rolamentos Hidráulico', name: 'Sacador de Rolamentos Hidráulico', val: 3800 },
-      { tag: 'PR-01', loc: 'Oficina Mecânica - Bancada 03', disc: 'Mecânica', cat: 'Prensa Hidráulica 30t', name: 'Prensa Hidráulica 30t', val: 6200 },
-      { tag: 'ES-01', loc: 'Setor de Caldeiraria', disc: 'Mecânica', cat: 'Esmerilhadeira Angular', name: 'Esmerilhadeira Angular', val: 890 },
-      { tag: 'AL-01', loc: 'Sala de Máquinas - Ventiladores', disc: 'Mecânica', cat: 'Alinhador a Laser de Eixos', name: 'Alinhador a Laser de Eixos', val: 28000 },
-      { tag: 'AV-01', loc: 'Linha de Produção - Envasadora', disc: 'Mecânica', cat: 'Analisador de Vibração', name: 'Analisador de Vibração', val: 34000 },
-      { tag: 'BC-01', loc: 'Laboratório de Metrologia', disc: 'Calibração', calib: 'Sim', cat: 'Bomba de Comparação Hidráulica', name: 'Bomba de Comparação Hidráulica', val: 12300 },
-      { tag: 'CP-01', loc: 'Sala de Instrumentação', disc: 'Calibração', calib: 'Sim', cat: 'Calibrador de Processos Multifunção', name: 'Calibrador de Processos Multifunção', val: 22500 },
-      { tag: 'TS-01', loc: 'Caldeiras - Linha de Vapor', disc: 'Calibração', calib: 'Sim', cat: 'Termômetro Padrão Digital', name: 'Termômetro Padrão Digital', val: 4100 },
-      { tag: 'BT-01', loc: 'Laboratório de Metrologia', disc: 'Calibração', calib: 'Sim', cat: 'Bloco Termostático (Dry Block)', name: 'Bloco Termostático (Dry Block)', val: 19800 },
-      { tag: 'PC-01', loc: 'Oficina Mecânica - Metrologia', disc: 'Calibração', calib: 'Sim', cat: 'Paquímetro Digital 300mm', name: 'Paquímetro Digital 300mm', val: 750 },
-      { tag: 'MC-01', loc: 'Usinagem - Sala de Medição', disc: 'Calibração', calib: 'Sim', cat: 'Micrômetro Externo 0-25mm', name: 'Micrômetro Externo 0-25mm', val: 620 },
-      { tag: 'MD-01', loc: 'Tratamento de Efluentes (ETE)', disc: 'Calibração', calib: 'Sim', cat: 'Manômetro Padrão Digital', name: 'Manômetro Padrão Digital', val: 3200 }
-    ].map((asset, index) => ({ ...asset, id: 1000 + index, calib: asset.calib || 'Não' }));
-    const readStorage = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return value ?? fallback; } catch (error) { console.warn(`Dados locais inválidos em ${key}; usando padrão.`, error); return fallback; } };
-    let assets = readStorage('pcm-assets', seedAssets);
-    const existingTags = new Set(assets.map(asset => asset.tag));
-    assets = [...assets, ...catalogAssets.filter(asset => !existingTags.has(asset.tag))].map(asset => ({ ...asset, name: asset.name || asset.tag, documents: asset.documents || [] }));
-    localStorage.setItem('pcm-assets', JSON.stringify(assets));
-    let auditLog = readStorage('gestao-fabril-audit', []);
-    let maintenancePlans = readStorage('pcm-plans', [
-      { id: 101, discipline: 'Mecânica', title: 'Inspeção de vibração', asset: 'BMB-UTIL-01', date: '2026-09-01', status: 'Atrasado', client: 'Cliente demonstração' },
-      { id: 102, discipline: 'Mecânica', title: 'Lubrificação preventiva', asset: 'CMP-UTL-02', date: '2026-09-06', status: 'Pendente', client: 'Cliente demonstração' },
-      { id: 103, discipline: 'Elétrica', title: 'Termografia do painel', asset: 'MTR-REC-01', date: '2026-09-04', status: 'Pendente', client: 'Cliente demonstração' },
-      { id: 104, discipline: 'Calibração', title: 'Calibração de manômetro', asset: 'BMB-ETA-08', date: '2026-09-02', status: 'Atrasado', client: 'Cliente demonstração' }
-    ]);
-    let currentView = 'dashboard';
-    let currentUser = null;
-    let maintenanceNotes = readStorage('pcm-maintenance-notes', []);
-    const defaultTheme = { header: '#ffffff', accent: '#087f83', font: 'DM Sans' };
-    let theme = { ...defaultTheme, ...readStorage('gestao-fabril-theme', {}) };
-    let currentDiscipline = 'Mecânica';
-    let currentTechnicianDiscipline = 'Elétrica';
-    const technicians = [
-      { id: 1, name: 'Carlos Mendes', discipline: 'Elétrica', shiftStart: 0, tasks: ['Termografia do painel MTR-REC-01', 'Reaperto de conexões'] },
-      { id: 2, name: 'Ana Ribeiro', discipline: 'Elétrica', shiftStart: 1, tasks: ['Inspeção de motores', 'Teste de proteção'] },
-      { id: 3, name: 'Lucas Alves', discipline: 'Elétrica', shiftStart: 2, tasks: ['Limpeza de painel', 'Atualizar diagrama'] },
-      { id: 4, name: 'Marcos Silva', discipline: 'Mecânica', shiftStart: 0, tasks: ['Inspeção de vibração BMB-UTIL-01', 'Lubrificação CMP-UTL-02'] },
-      { id: 5, name: 'Juliana Costa', discipline: 'Mecânica', shiftStart: 1, tasks: ['Revisão de rolamentos', 'Alinhamento de eixo'] },
-      { id: 6, name: 'Rafael Souza', discipline: 'Mecânica', shiftStart: 2, tasks: ['Inspeção de correias', 'Checklist de bomba'] },
-      { id: 7, name: 'Beatriz Lima', discipline: 'Calibração', shiftStart: 0, tasks: ['Calibração BMB-ETA-08', 'Verificação de manômetro'] },
-      { id: 8, name: 'Diego Martins', discipline: 'Calibração', shiftStart: 1, tasks: ['Calibração de transmissores', 'Emitir certificados'] },
-      { id: 9, name: 'Camila Rocha', discipline: 'Calibração', shiftStart: 2, tasks: ['Inspeção de sensores', 'Atualizar histórico metrológico'] }
-    ];
-    const money = value => Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
-    const icon = name => `<i data-lucide="${name}" size="17"></i>`;
-    const refreshIcons = () => window.lucide && lucide.createIcons();
-    const showToast = message => { const root = document.getElementById('toast-root'); root.innerHTML = `<div class="toast">${icon('check-circle-2')} ${message}</div>`; refreshIcons(); setTimeout(() => root.innerHTML = '', 3200); };
-    const save = () => localStorage.setItem('pcm-assets', JSON.stringify(assets));
-    const saveAudit = () => localStorage.setItem('gestao-fabril-audit', JSON.stringify(auditLog));
-    const recordAudit = (action, asset, detail, before = null) => { auditLog.unshift({ id: Date.now(), date: new Date().toLocaleString('pt-BR'), user: 'Analista PCM', action, asset: asset.tag, detail, before: before ? JSON.parse(JSON.stringify(before)) : null }); saveAudit(); };
-    const savePlans = () => localStorage.setItem('pcm-plans', JSON.stringify(maintenancePlans));
-    const saveNotes = () => localStorage.setItem('pcm-maintenance-notes', JSON.stringify(maintenanceNotes));
-    const saveTheme = () => localStorage.setItem('gestao-fabril-theme', JSON.stringify(theme));
-    function applyTheme() { document.documentElement.style.setProperty('--header-bg', theme.header); document.documentElement.style.setProperty('--teal', theme.accent); document.documentElement.style.setProperty('--body-font', `'${theme.font}', sans-serif`); }
-    function layout() {
-      const total = assets.reduce((sum, asset) => sum + Number(asset.val), 0);
-      const title = currentView === 'dashboard' ? 'Visão geral' : currentView === 'assets' ? 'Cadastro de ativos' : currentView === 'plans' ? 'Planos de manutenção' : currentView === 'maintenance-notes' ? 'Notas De Manutenção' : currentView === 'technicians' ? 'Técnicos' : currentView === 'audit' ? 'Auditoria' : currentView === 'settings' ? 'Configurações' : 'Assistente PCM';
-      const subtitle = currentView === 'dashboard' ? 'Acompanhe a saúde operacional da sua planta.' : currentView === 'assets' ? 'Registre equipamentos e mantenha a base patrimonial atualizada.' : currentView === 'plans' ? 'Rotas organizadas para cada disciplina da manutenção.' : currentView === 'maintenance-notes' ? 'Registre falhas e encaminhe o atendimento para a equipe responsável.' : currentView === 'technicians' ? 'Disponibilidade, escala 6x2 e planos atribuídos por técnico.' : currentView === 'audit' ? 'Controle, rastreabilidade e reversão das ações realizadas.' : 'Transforme informações soltas em um plano de manutenção organizado.';
-      return `<div class="section-head"><div><h2>${title}</h2><p>${subtitle}</p></div>${currentView === 'assets' ? `<button class="btn btn-primary" id="new-asset">${icon('plus')} Novo ativo</button>` : ''}</div>${currentView === 'dashboard' ? dashboardPage(total) : currentView === 'assets' ? assetsPage() : currentView === 'plans' ? plansPage() : currentView === 'maintenance-notes' ? maintenanceNotesPage() : currentView === 'technicians' ? techniciansPage() : currentView === 'audit' ? auditPage() : currentView === 'settings' ? settingsPage() : assistantPageV2()}`;
-    }
-    function dashboardPage(total) { const calibrated = assets.filter(a => a.calib === 'Sim').length; const plans = maintenancePlans.filter(p => p.discipline === currentDiscipline); const statusClass = status => status === 'Atrasado' ? 'orange' : status === 'Concluído' ? 'teal' : 'gray'; return `<div class="metrics"><div class="metric"><span class="metric-label">Ativos cadastrados</span><strong>${assets.length}</strong><small>Base operacional ativa</small></div><div class="metric teal"><span class="metric-label">Planos pendentes</span><strong>${maintenancePlans.filter(p => p.status === 'Pendente').length}</strong><small>Próximas execuções</small></div><div class="metric orange"><span class="metric-label">Planos atrasados</span><strong>${maintenancePlans.filter(p => p.status === 'Atrasado').length}</strong><small>Requerem reprogramação</small></div><div class="metric teal"><span class="metric-label">Valor patrimonial</span><strong>${money(total)}</strong><small>${calibrated} ativos calibráveis</small></div></div><div class="panel"><div class="panel-title">${icon('calendar-days')}<h3>Agenda de manutenção</h3></div><div class="plan-tabs">${['Mecânica','Elétrica','Calibração'].map(d => `<button class="plan-tab ${d === currentDiscipline ? 'active' : ''}" data-discipline="${d}">${d} (${maintenancePlans.filter(p => p.discipline === d).length})</button>`).join('')}</div><div class="schedule">${plans.length ? plans.map(p => `<div class="schedule-row"><div><strong>${p.title}</strong><small>${p.asset} · ${p.client}</small></div><div><small>Data planejada</small><br><b>${new Date(`${p.date}T12:00:00`).toLocaleDateString('pt-BR')}</b></div><div><span class="badge ${statusClass(p.status)}">${p.status}</span></div><button class="btn btn-quiet schedule-action" data-reschedule="${p.id}">${icon('calendar-clock')} Reagendar</button></div>`).join('') : '<div class="empty">Nenhum plano cadastrado para esta disciplina.</div>'}</div><div class="date-free">${icon('calendar-plus')} Janela livre identificada: sexta-feira, 11/09. Use “Reagendar” para mover um plano para esse dia.</div></div>`; }
-    function technicianAgendaPage() { const plans = maintenancePlans.filter(plan => plan.discipline === currentDiscipline); const statusClass = status => status === 'Atrasado' ? 'orange' : status === 'Concluído' ? 'teal' : 'gray'; return `<div class="panel"><div class="panel-title">${icon('calendar-days')}<h3>Agenda de manutenção</h3><span class="badge teal" style="margin-left:auto">Somente visualização</span></div><div class="plan-tabs">${['Mecânica','Elétrica','Calibração'].map(discipline => `<button class="plan-tab ${discipline === currentDiscipline ? 'active' : ''}" data-discipline="${discipline}">${discipline} (${maintenancePlans.filter(plan => plan.discipline === discipline).length})</button>`).join('')}</div><div class="schedule">${plans.length ? plans.map(plan => `<div class="schedule-row"><div><strong>${plan.title}</strong><small>${plan.asset} · ${plan.client}</small></div><div><small>Data planejada</small><br><b>${new Date(`${plan.date}T12:00:00`).toLocaleDateString('pt-BR')}</b></div><span class="badge ${statusClass(plan.status)}">${plan.status}</span></div>`).join('') : '<div class="empty">Nenhum plano cadastrado para esta disciplina.</div>'}</div></div>`; }
-    const fullDashboardPage = dashboardPage;
-    dashboardPage = total => currentUser?.role === 'Técnico' ? technicianAgendaPage() : fullDashboardPage(total);
-    function assetsPage() { return `<div class="panel"><div class="toolbar"><div class="search">${icon('search')}<input id="asset-search" placeholder="Buscar por tag, descrição ou localização..." /></div><select id="discipline-filter" style="max-width:180px"><option value="">Todas as disciplinas</option><option>Mecânica</option><option>Elétrica</option><option>Calibração</option></select><button id="export-csv" class="btn btn-quiet">${icon('download')} Exportar CSV</button></div><div class="table-wrap"><table><thead><tr><th>Tag</th><th>Descrição</th><th>Localização</th><th>Disciplina</th><th>Categoria</th><th>Valor NF</th><th></th></tr></thead><tbody id="asset-rows"></tbody></table></div></div>`; }
-    function renderRows() { const rows = document.getElementById('asset-rows'); if (!rows) return; const query = (document.getElementById('asset-search')?.value || '').toLowerCase(); const discipline = document.getElementById('discipline-filter')?.value || ''; const filtered = assets.filter(a => (!query || `${a.tag} ${a.name} ${a.loc} ${a.cat}`.toLowerCase().includes(query)) && (!discipline || a.disc === discipline)); rows.innerHTML = filtered.length ? filtered.map(a => `<tr><td class="tag">${a.tag}</td><td>${a.name}</td><td>${a.loc}</td><td><span class="badge ${a.disc === 'Elétrica' ? 'teal' : a.disc === 'Calibração' ? 'gray' : 'orange'}">${a.disc}</span></td><td>${a.cat}</td><td><b>${money(a.val)}</b></td><td><button class="btn btn-quiet asset-docs" data-id="${a.id}" title="Abrir ficha e documentos">${icon('folder-open')}</button> <button class="btn btn-danger delete-asset" data-id="${a.id}" title="Excluir ativo">${icon('trash-2')}</button></td></tr>`).join('') : '<tr><td class="empty" colspan="7">Nenhum ativo encontrado.</td></tr>'; refreshIcons(); }
-    function plansPage() { return `<div class="plans"><div class="panel plan"><div class="panel-title">${icon('settings')}<h3>Inspeção mecânica</h3></div><p>Inspeções sistemáticas, lubrificação e acompanhamento de condição.</p><div class="checklist"><div class="check"><span>Revisão interna</span><span class="badge orange">Parada</span></div><div class="check"><span>Vibração e temperatura</span><span class="badge teal">Rodando</span></div><div class="check"><span>Lubrificação</span><span class="badge teal">Em execução</span></div></div></div><div class="panel plan orange"><div class="panel-title">${icon('zap')}<h3>Inspeção elétrica</h3></div><p>Atendimento aos circuitos, painéis e motores críticos da planta.</p><div class="checklist"><div class="check"><span>Reaperto e limpeza</span><span class="badge orange">Parado</span></div><div class="check"><span>Termografia</span><span class="badge teal">Rodando</span></div></div></div><div class="panel plan red"><div class="panel-title">${icon('gauge')}<h3>Rota de calibração</h3></div><p>Garantia metrológica de sensores, manômetros e transmissores.</p><div class="checklist"><div class="check"><span>Manômetros</span><span class="badge teal">Conforme</span></div><div class="check"><span>Transmissores de pressão</span><span class="badge orange">Programado</span></div></div></div></div>`; }
-    function isTechnicianWorking(technician, date) { const start = new Date('2026-09-01T12:00:00'); const day = Math.floor((date - start) / 86400000); return ((day - technician.shiftStart) % 8 + 8) % 8 < 6; }
-    function maintenanceNotesPage() { const priorityClass = priority => priority === 'Muito urgente' ? 'critical' : priority === 'Urgente' ? 'orange' : 'teal'; const notes = [...maintenanceNotes].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); return `<div class="maintenance-notes"><form class="panel maintenance-form" id="maintenance-note-form"><div class="panel-title">${icon('file-plus-2')}<h3>Abrir nota de manutenção</h3></div><div class="form-grid"><div class="field"><label for="note-type">TIPO DE NOTA</label><select id="note-type" name="type" required><option>Corretiva</option><option>Mecânica</option><option>Calibração</option><option>Elétrica</option></select></div><div class="field"><label for="note-priority">PRIORIDADE</label><select id="note-priority" name="priority" required><option>Muito urgente</option><option>Urgente</option><option>Pode esperar</option><option>Programada</option></select></div><div class="field full"><label for="note-equipment">EQUIPAMENTO / TAG</label><input id="note-equipment" name="equipment" required placeholder="Ex.: BMB-ETA-08" /></div><div class="field full"><label for="note-failure">MOTIVO DA FALHA</label><textarea id="note-failure" name="failure" required placeholder="Descreva o que aconteceu, quando começou e quais sinais foram observados."></textarea></div><div class="field full"><label for="note-solution">POSSÍVEL SOLUÇÃO</label><textarea id="note-solution" name="solution" required placeholder="Registre a hipótese de causa e a solução sugerida para o atendimento."></textarea></div><div class="field full"><label for="note-requester">ABERTA POR</label><input id="note-requester" name="requester" required placeholder="Nome do técnico ou analista" /></div></div><div class="modal-actions"><button class="btn btn-primary" type="submit">${icon('send')} Abrir nota</button></div></form><div class="panel"><div class="panel-title">${icon('clipboard-list')}<h3>Notas abertas</h3><span class="badge teal" style="margin-left:auto">${notes.length} registro(s)</span></div><div class="note-list">${notes.length ? notes.map(note => `<article class="note-card ${priorityClass(note.priority)}"><header><div><h3>${note.equipment}</h3><small>${note.type} · ${note.requester} · ${new Date(note.createdAt).toLocaleString('pt-BR')}</small></div><span class="badge ${note.priority === 'Muito urgente' || note.priority === 'Urgente' ? 'orange' : 'teal'}">${note.priority}</span></header><div class="note-meta"><span class="badge gray">${note.type}</span><span class="badge ${note.status === 'Concluída' ? 'teal' : 'gray'}">${note.status}</span></div><p><strong>Falha:</strong> ${note.failure}</p><p><strong>Possível solução:</strong> ${note.solution}</p><div class="note-actions">${note.status !== 'Concluída' ? `<button class="btn btn-quiet complete-note" data-id="${note.id}">${icon('check')} Concluir</button>` : ''}<button class="btn btn-danger delete-note" data-id="${note.id}">${icon('trash-2')} Excluir</button></div></article>`).join('') : '<div class="empty">Nenhuma nota de manutenção aberta.</div>'}</div></div></div>`; }
-    function techniciansPage() { const disciplineTechnicians = technicians.filter(technician => technician.discipline === currentTechnicianDiscipline); const today = new Date('2026-09-04T12:00:00'); const agenda = Array.from({ length: 7 }, (_, index) => { const date = new Date(today); date.setDate(today.getDate() + index); return date; }); return `<div class="panel"><div class="panel-title">${icon('calendar-days')}<h3>Agenda de disponibilidade · escala 6x2</h3><span class="badge teal" style="margin-left:auto">3 técnicos por equipe</span></div><div class="technician-tabs">${['Elétrica','Mecânica','Calibração'].map(discipline => `<button class="technician-tab ${discipline === currentTechnicianDiscipline ? 'active' : ''}" data-technician-discipline="${discipline}">${discipline}</button>`).join('')}</div><div class="table-wrap"><table><thead><tr><th>Data</th>${disciplineTechnicians.map(technician => `<th>${technician.name}</th>`).join('')}</tr></thead><tbody>${agenda.map(date => `<tr><td><b>${date.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' })}</b></td>${disciplineTechnicians.map(technician => { const working = isTechnicianWorking(technician, date); return `<td><span class="badge ${working ? 'teal' : 'orange'}">${working ? 'Disponível' : 'Folga'}</span></td>`; }).join('')}</tr>`).join('')}</tbody></table></div></div><div class="technician-grid" style="margin-top:18px">${disciplineTechnicians.map(technician => { const working = isTechnicianWorking(technician, today); return `<article class="technician-card"><header><h3>${technician.name}</h3><span class="badge ${working ? 'teal' : 'orange'}">${working ? 'Ativo hoje' : 'Folga hoje'}</span></header><div class="availability"><span class="availability-dot ${working ? '' : 'off'}"></span>${working ? 'Disponível para receber planos' : 'Em período de folga'}</div><div class="task-list">${technician.tasks.map((task, index) => `<div class="task-item"><span>${task}</span><button class="btn btn-quiet complete-task" data-technician="${technician.id}" data-task="${index}" title="Concluir tarefa">${icon('check')}</button></div>`).join('')}</div></article>`; }).join('')}</div>`; }
-    function assistantPageV2() { return `<div class="assistant"><div class="assistant-copy"><span class="eyebrow">Automação inteligente</span><h3>Plano no padrão do cliente</h3><p>Informe o cliente, envie uma foto ou documento do padrão e descreva a necessidade. O agente organiza a resposta no mesmo formato para revisão da equipe.</p><div class="assistant-list"><div>${icon('check-circle-2')} Mantém um padrão por cliente</div><div>${icon('check-circle-2')} Usa foto como referência visual</div><div>${icon('check-circle-2')} Gera roteiro, prioridade e prazo</div></div></div><div class="panel chat-panel"><div class="panel-title">${icon('bot')}<h3>Agente Assistente PCM</h3><span class="badge teal" style="margin-left:auto">Modo demonstração</span></div><div class="reference-box"><label for="client-pattern">PADRÃO DO CLIENTE</label><input id="client-pattern" placeholder="Ex.: Cliente Alpha · Plano padrão v2" /><label for="pattern-file">FOTO OU ARQUIVO DO PADRÃO</label><input id="pattern-file" type="file" accept="image/*,.pdf" /><small id="file-name">Nenhum arquivo enviado. A imagem será usada como referência na demonstração.</small><img id="reference-preview" class="reference-preview" alt="Prévia do padrão enviado" /></div><div class="chat-log" id="chat-log"><div class="chat-message ai">Olá! Envie o padrão do cliente acima e escreva algo como:\n\n“Faça nesse padrão: a bomba BMB-UTIL-01 está vibrando e precisa de inspeção.”</div></div><form class="chat-form" id="chat-form"><input id="chat-input" required placeholder="Descreva o equipamento ou serviço..." /><button class="btn btn-primary" title="Enviar mensagem">${icon('send')}</button></form></div></div>`; }
-    function maintenanceMeasurementLines(text) { const value = text.toLowerCase(); if (/corrente|tensão|voltagem|painel/.test(value)) return '\n     R: _______ A     S: _______ A     T: _______ A\n     Tensão: _______ V     Frequência: _______ Hz'; if (/temperatura|termograf/.test(value)) return '\n     Temperatura observada: _______ °C     Limite: _______ °C'; if (/pressão|hidrául|pneum/.test(value)) return '\n     Pressão medida: _______ bar     Pressão de referência: _______ bar'; if (/vibra|alinhamento|eixo/.test(value)) return '\n     Vibração horizontal: _______ mm/s     Vertical: _______ mm/s     Axial: _______ mm/s'; return ''; }
-    function maintenanceChecklistItem(number, subsystem, index) { const actions = [`Verificar as condições gerais de ${subsystem}, observando integridade, limpeza e ausência de anomalias; corrigir sujeira, danos ou irregularidades, se necessário.`, `Inspecionar fixações, conexões e componentes de ${subsystem}, certificando-se de que estejam firmes, sem folgas, aquecimento ou vazamentos; reapertar conexões ou substituir peças, se necessário.`, `Testar o funcionamento de ${subsystem}, confirmando operação estável, sem ruído, vibração ou desvio dos parâmetros de referência; ajustar, alinhar ou corrigir a causa encontrada, se necessário.`]; const item = `${String(number).padStart(2, '0')} - (  ) ${actions[index % actions.length]}`; return item + maintenanceMeasurementLines(subsystem); }
-    function generateMaintenanceOrder(data) { const typeParts = data.orderType.split('|'); const code = typeParts[0]; const kind = typeParts[1]; const subsystems = data.subsystems.split(/[,;\n]+/).map(item => item.trim()).filter(Boolean); let number = 1; const lines = [`Ordem de Serviço Nº ${data.orderNumber || '________________'}`, `${code}-Ordem de manutenção ${kind}`, '', `ATIVO / EQUIPAMENTO: ${data.equipment}`, `DATA: ____/____/________     RESPONSÁVEL: ______________________________`, '', 'INSTRUÇÕES DE INSPEÇÃO']; subsystems.forEach(subsystem => { lines.push('', subsystem.toUpperCase()); for (let index = 0; index < 3; index += 1) lines.push(maintenanceChecklistItem(number++, subsystem, index)); }); if (!subsystems.length) lines.push('', 'SUBSISTEMA A DEFINIR', maintenanceChecklistItem(number++, data.equipment, 0)); lines.push('', 'OBSERVAÇÕES / SERVIÇOS EXECUTADOS:', '________________________________________________________________________________', '________________________________________________________________________________', '', 'ASSINATURA DO EXECUTANTE: __________________________    DATA: ____/____/________'); return lines.join('\n'); }
-    assistantPageV2 = () => `<div class="assistant"><div class="assistant-copy"><span class="eyebrow">Engenharia de manutenção</span><h3>Gerador de Ordem de Serviço</h3><p>Redija procedimentos e ordens de serviço no padrão técnico corporativo ZPM2 / SAP PM, com subsistemas, checklist contínuo e campos de medição.</p><div class="assistant-list"><div>${icon('check-circle-2')} Cabeçalho padronizado da OS</div><div>${icon('check-circle-2')} Checklist sequencial por subsistema</div><div>${icon('check-circle-2')} Parâmetros quantitativos para preenchimento</div><div>${icon('check-circle-2')} Texto limpo pronto para impressão</div></div></div><div class="panel chat-panel"><div class="panel-title">${icon('clipboard-pen-line')}<h3>Nova ordem de serviço</h3><span class="badge teal" style="margin-left:auto">ZPM2 / SAP PM</span></div><form id="maintenance-order-form"><div class="form-grid"><div class="field"><label for="os-equipment">ATIVO / EQUIPAMENTO</label><input id="os-equipment" name="equipment" required placeholder="Ex.: Compressor de Parafuso" /></div><div class="field"><label for="os-number">CÓDIGO DA OS</label><input id="os-number" name="orderNumber" required placeholder="Ex.: 522282933" /></div><div class="field"><label for="os-type">TIPO DA ORDEM</label><select id="os-type" name="orderType"><option value="ZPM2|preventiva">ZPM2 · Preventiva</option><option value="ZCM2|corretiva">ZCM2 · Corretiva</option><option value="ZPM3|preditiva">ZPM3 · Preditiva</option></select></div><div class="field full"><label for="os-subsystems">SUBSISTEMAS A INSPECIONAR</label><textarea id="os-subsystems" name="subsystems" required placeholder="Um por linha: Motor principal\nPainel de comando\nCircuito hidráulico"></textarea><small style="color:var(--muted);font-size:11px">Separe os conjuntos por linha, vírgula ou ponto e vírgula.</small></div></div><div class="modal-actions"><button class="btn btn-primary" type="submit">${icon('file-output')} Gerar ordem</button><button class="btn btn-quiet" type="button" id="print-maintenance-order">${icon('printer')} Imprimir</button></div></form><pre id="maintenance-order-output" class="maintenance-order-output">Preencha os dados e gere a ordem para visualizar a folha de inspeção.</pre></div></div>`;
-    function generateUniqueOrderNumber() { const key = 'pcm-generated-os-numbers'; let used = []; try { used = JSON.parse(localStorage.getItem(key) || '[]'); } catch (error) { used = []; } const registered = new Set(used.map(String)); let number; do { number = String(Math.floor(100000000 + Math.random() * 900000000)); } while (registered.has(number)); registered.add(number); localStorage.setItem(key, JSON.stringify([...registered])); return number; }
-    const baseAssistantPageV2 = assistantPageV2;
-    assistantPageV2 = () => baseAssistantPageV2().replace('id="os-number" name="orderNumber" required placeholder="Ex.: 522282933"', `id="os-number" name="orderNumber" value="${generateUniqueOrderNumber()}" readonly required`);
-    function assistantReply(message) { const text = message.toLowerCase(); const priority = text.includes('parou') || text.includes('urgente') || text.includes('vazamento') ? 'Alta' : text.includes('vibr') || text.includes('ruído') ? 'Média' : 'Programada'; const type = text.includes('mont') ? 'Montagem / comissionamento' : text.includes('elétr') || text.includes('painel') ? 'Inspeção elétrica' : 'Inspeção mecânica'; const equipment = message.match(/[A-Z]{2,}[A-Z0-9-]*/)?.[0] || 'equipamento informado'; return `PLANO GERADO\n\nAtivo: ${equipment}\nTipo: ${type}\nPrioridade sugerida: ${priority}\n\n1. Isolar e sinalizar a área de trabalho.\n2. Conferir histórico, condições e riscos do equipamento.\n3. Executar inspeção visual e registrar evidências.\n4. Corrigir a causa identificada e testar em segurança.\n5. Registrar materiais, responsável e prazo no PCM.\n\nPara concluir, confirme o responsável e a janela de execução.`; }
-    function auditPage() { return `<div class="panel"><div class="panel-title">${icon('history')}<h3>Alterações realizadas pelos usuários</h3></div><p style="color:var(--muted);font-size:12px">Cada evento registra quem alterou, quando ocorreu e o que foi feito. O desfazimento também fica registrado.</p><div class="audit-list">${auditLog.length ? auditLog.map(log => `<div class="audit-row"><div><strong>${log.date}</strong><small>${log.user}</small></div><div><strong>${log.action} · ${log.asset}</strong><small>${log.detail}</small></div>${log.before ? `<button class="btn btn-quiet undo-audit" data-id="${log.id}">${icon('undo-2')} Desfazer</button>` : '<span class="badge gray">Informativo</span>'}</div>`).join('') : '<div class="empty">Nenhuma alteração registrada até o momento.</div>'}</div></div>`; }
-    function undoAudit(id) { const password = prompt('Senha de analista para desfazer esta alteração:'); if (password !== 'analista123') { showToast('Acesso negado.'); return; } const log = auditLog.find(item => item.id === Number(id)); if (!log || !log.before) return; const current = assets.find(item => item.id === log.before.id); if (current) Object.assign(current, log.before); else assets.push(log.before); save(); const restored = assets.find(item => item.id === log.before.id) || log.before; recordAudit('Desfazer alteração', restored, `Estado anterior restaurado para o evento ${log.action} de ${log.date}`); render(); showToast('Alteração desfeita e registrada no histórico.'); }
-    function openModal() { document.getElementById('modal-root').innerHTML = `<div class="modal-backdrop"><form class="modal" id="asset-form"><div class="modal-head"><div><h2>Novo equipamento</h2><p style="color:var(--muted);font-size:12px;margin:6px 0 0">Inclua os dados principais do ativo.</p></div><button type="button" class="close" id="close-modal">${icon('x')}</button></div><div class="form-grid"><div class="field"><label>TAG DO EQUIPAMENTO</label><input name="tag" required placeholder="Ex.: BMB-UTIL-01" /></div><div class="field"><label>LOCAL DE INSTALAÇÃO</label><input name="loc" required placeholder="Ex.: Casa de máquinas" /></div><div class="field"><label>DISCIPLINA PRINCIPAL</label><select name="disc"><option>Mecânica</option><option>Elétrica</option></select></div><div class="field"><label>CALIBRAÇÃO PERIÓDICA</label><select name="calib"><option>Sim</option><option>Não</option></select></div><div class="field"><label>CATEGORIA FISCAL</label><select name="cat"><option>Produtiva</option><option>Utilidades</option><option>Sobressalente</option></select></div><div class="field"><label>VALOR DA NOTA FISCAL (R$)</label><input name="val" type="number" min="0" step="0.01" required placeholder="50000" /></div><div class="field full"><label>NOTA FISCAL OU DOCUMENTAÇÕES TÉCNICAS</label><input name="documents" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" /><small style="color:var(--muted);font-size:11px">Você poderá incluir manual, desenho, certificado e nota fiscal na ficha do ativo.</small></div></div><div class="modal-actions"><button type="button" class="btn btn-quiet" id="cancel-modal">Cancelar</button><button class="btn btn-primary" type="submit">${icon('save')} Gravar equipamento</button></div></form></div>`; refreshIcons(); document.getElementById('close-modal').onclick = closeModal; document.getElementById('cancel-modal').onclick = closeModal; document.getElementById('asset-form').onsubmit = async event => { event.preventDefault(); const data = Object.fromEntries(new FormData(event.target)); const documents = await readFiles(event.target.elements.documents.files); const asset = { ...data, id: Date.now(), val: Number(data.val), documents }; delete asset.documents; asset.documents = documents; assets.unshift(asset); save(); recordAudit('Criação', asset, `Ativo cadastrado com ${documents.length} documento(s)`); closeModal(); render(); showToast('Equipamento e documentos registrados.'); }; }
-    const originalOpenModal = openModal;
-    openModal = () => { originalOpenModal(); const form = document.getElementById('asset-form'); const tagField = form.elements.tag.closest('.field'); tagField.insertAdjacentHTML('afterend', '<div class="field"><label>DESCRIÇÃO DO EQUIPAMENTO</label><input name="name" required placeholder="Ex.: Bomba centrífuga" /></div>'); form.elements.disc.insertAdjacentHTML('beforeend', '<option>Calibração</option>'); form.elements.cat.outerHTML = '<input name="cat" required placeholder="Ex.: Instrumento de Medição" />'; };
-    function readFiles(files) { return Promise.all([...files].map(file => new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve({ name: file.name, type: file.type, size: file.size, data: reader.result }); reader.readAsDataURL(file); }))); }
-    function openAssetDetails(id) { const asset = assets.find(item => item.id === Number(id)); if (!asset) return; const docs = asset.documents || []; document.getElementById('modal-root').innerHTML = `<div class="modal-backdrop"><div class="modal"><div class="modal-head"><div><h2>${asset.tag}</h2><p style="color:var(--muted);font-size:12px;margin:6px 0 0">Ficha técnica · ${asset.loc}</p></div><button class="close" id="close-modal">${icon('x')}</button></div><div class="reference-box"><strong>Documentos do ativo</strong><small>${docs.length} arquivo(s) vinculado(s). Nota fiscal, manual e certificados ficam organizados nesta ficha.</small><input id="asset-doc-upload" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" /></div><div class="schedule">${docs.length ? docs.map((doc, index) => `<div class="schedule-row"><div><strong>${doc.name}</strong><small>${Math.ceil(doc.size / 1024)} KB · ${doc.type || 'arquivo'}</small></div><a class="btn btn-quiet schedule-action" href="${doc.data}" download="${doc.name}">${icon('download')} Abrir</a><button class="btn btn-quiet schedule-action edit-doc" data-index="${index}">${icon('pencil')} Editar</button></div>`).join('') : '<div class="empty">Nenhum documento anexado.</div>'}</div><div class="panel" style="margin-top:16px;padding:14px;background:#f8fbfa"><strong style="font-size:12px">Histórico de alterações</strong>${auditLog.filter(log => log.asset === asset.tag).slice(0, 6).map(log => `<div style="font-size:11px;color:var(--muted);padding-top:9px">${log.date} · ${log.user} · ${log.action}: ${log.detail}</div>`).join('') || '<div style="font-size:11px;color:var(--muted);padding-top:9px">Nenhuma alteração registrada.</div>'}</div><div class="modal-actions"><button class="btn btn-quiet" id="edit-asset">${icon('pencil')} Editar dados (Analista+)</button></div></div></div>`; refreshIcons(); document.getElementById('close-modal').onclick = closeModal; document.getElementById('asset-doc-upload').onchange = async event => { const password = prompt('Senha de analista para anexar documentos:'); if (password !== 'analista123') { showToast('Acesso negado.'); event.target.value = ''; return; } const newDocs = await readFiles(event.target.files); asset.documents = [...docs, ...newDocs]; save(); recordAudit('Inclusão de documento', asset, newDocs.map(doc => doc.name).join(', ')); openAssetDetails(asset.id); showToast('Documento anexado e alteração registrada.'); }; document.querySelectorAll('.edit-doc').forEach(button => button.onclick = () => editDocument(asset, Number(button.dataset.index))); document.getElementById('edit-asset').onclick = () => editAsset(asset); }
-    function editDocument(asset, index) { const password = prompt('Senha de analista para editar este arquivo:'); if (password !== 'analista123') { showToast('Acesso negado.'); return; } const before = JSON.parse(JSON.stringify(asset)); const doc = asset.documents[index]; const name = prompt('Novo nome do arquivo:', doc.name); if (name && name !== doc.name) { doc.name = name; recordAudit('Edição de documento', asset, `${before.documents[index].name} alterado para ${name}`, before); save(); openAssetDetails(asset.id); showToast('Arquivo atualizado e alteração registrada.'); } }
-    function editAsset(asset) { const password = prompt('Senha de analista para editar o ativo:'); if (password !== 'analista123') { showToast('Acesso negado.'); return; } const before = JSON.parse(JSON.stringify(asset)); const loc = prompt('Nova localização:', asset.loc); if (loc && loc !== asset.loc) { asset.loc = loc; recordAudit('Edição de ativo', asset, `Localização alterada de ${before.loc} para ${loc}`, before); save(); closeModal(); render(); showToast('Ativo atualizado e alteração registrada.'); } }
-    function closeModal() { document.getElementById('modal-root').innerHTML = ''; }
-    function bindTechnicianActions() { if (currentView !== 'technicians') return; document.querySelectorAll('.technician-tab').forEach(tab => tab.onclick = () => { currentTechnicianDiscipline = tab.dataset.technicianDiscipline; render(); }); document.querySelectorAll('.complete-task').forEach(button => button.onclick = () => { const technician = technicians.find(item => item.id === Number(button.dataset.technician)); const task = technician.tasks[Number(button.dataset.task)]; if (technician && task) { recordAudit('Conclusão de plano', { tag: technician.name }, `Tarefa concluída: ${task}`); technician.tasks.splice(Number(button.dataset.task), 1); render(); showToast('Plano concluído e registrado na auditoria.'); } }); }
-    function render() { document.getElementById('main-content').innerHTML = layout(); refreshIcons(); if (currentView === 'dashboard') { document.querySelectorAll('.plan-tab').forEach(tab => tab.onclick = () => { currentDiscipline = tab.dataset.discipline; render(); }); document.querySelectorAll('[data-reschedule]').forEach(button => button.onclick = () => { const plan = maintenancePlans.find(item => item.id === Number(button.dataset.reschedule)); const date = prompt('Digite a nova data no formato AAAA-MM-DD:', '2026-09-11'); if (plan && date && /^\\d{4}-\\d{2}-\\d{2}$/.test(date)) { plan.date = date; plan.status = 'Pendente'; savePlans(); render(); showToast('Plano reagendado para a nova data.'); } }); } if (currentView === 'audit') { document.querySelectorAll('.undo-audit').forEach(button => button.onclick = () => undoAudit(button.dataset.id)); } if (currentView === 'assets') { renderRows(); document.getElementById('new-asset').onclick = openModal; document.getElementById('asset-search').oninput = renderRows; document.getElementById('discipline-filter').onchange = renderRows; document.getElementById('export-csv').onclick = exportCsv; document.querySelectorAll('.asset-docs').forEach(button => button.onclick = () => openAssetDetails(button.dataset.id)); document.querySelectorAll('.delete-asset').forEach(button => button.onclick = () => { if (confirm('Excluir este ativo da base?')) { const asset = assets.find(item => item.id === Number(button.dataset.id)); const before = asset ? JSON.parse(JSON.stringify(asset)) : null; assets = assets.filter(a => a.id !== Number(button.dataset.id)); save(); if (asset) recordAudit('Exclusão', asset, 'Ativo removido da base', before); renderRows(); showToast('Ativo removido.'); } }); } if (currentView === 'assistant') { const fileInput = document.getElementById('pattern-file'); fileInput.onchange = () => { const file = fileInput.files[0]; document.getElementById('file-name').textContent = file ? `${file.name} anexado como referência.` : 'Nenhum arquivo enviado.'; if (file && file.type.startsWith('image/')) { const preview = document.getElementById('reference-preview'); preview.src = URL.createObjectURL(file); preview.style.display = 'block'; } }; document.getElementById('chat-form').onsubmit = event => { event.preventDefault(); const input = document.getElementById('chat-input'); const log = document.getElementById('chat-log'); const message = input.value.trim(); const client = document.getElementById('client-pattern').value.trim() || 'padrão geral PCM'; log.insertAdjacentHTML('beforeend', `<div class="chat-message user"></div>`); log.lastElementChild.textContent = message; input.value = ''; log.insertAdjacentHTML('beforeend', `<div class="chat-message ai"></div>`); log.lastElementChild.textContent = `PADRÃO APLICADO: ${client}\\n\\n${assistantReply(message)}\\n\\nArquivo de referência: ${fileInput.files[0]?.name || 'não enviado'}`; log.scrollTop = log.scrollHeight; }; } }
-    function exportCsv() { const header = 'Tag;Descrição;Localização;Disciplina;Categoria;Valor Nota Fiscal\n'; const body = assets.map(a => [a.tag, a.name, a.loc, a.disc, a.cat, a.val].join(';')).join('\n'); const blob = new Blob([header + body], { type: 'text/csv;charset=utf-8' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'ativos-pcm.csv'; link.click(); URL.revokeObjectURL(link.href); showToast('CSV exportado.'); }
-    document.addEventListener('submit', event => { if (event.target.id === 'maintenance-order-form') { event.preventDefault(); const data = Object.fromEntries(new FormData(event.target)); document.getElementById('maintenance-order-output').textContent = generateMaintenanceOrder(data); showToast('Ordem de serviço gerada no padrão técnico.'); return; } if (event.target.id !== 'maintenance-note-form') return; event.preventDefault(); const formData = new FormData(event.target); const note = { id: Date.now(), type: formData.get('type'), priority: formData.get('priority'), equipment: formData.get('equipment').trim(), failure: formData.get('failure').trim(), solution: formData.get('solution').trim(), requester: formData.get('requester').trim(), status: 'Aberta', createdAt: new Date().toISOString() }; maintenanceNotes.unshift(note); saveNotes(); recordAudit('Abertura de nota', { tag: note.equipment }, `${note.type} · prioridade ${note.priority} · ${note.failure}`); render(); showToast('Nota de manutenção aberta e registrada.'); });
-    document.addEventListener('click', event => { if (event.target.closest('#print-maintenance-order')) { const output = document.getElementById('maintenance-order-output'); if (output && !output.textContent.startsWith('Preencha os dados')) window.print(); else showToast('Gere a ordem antes de imprimir.'); } });
-    document.addEventListener('click', event => { const noteButton = event.target.closest('.complete-note, .delete-note'); if (noteButton) { const note = maintenanceNotes.find(item => item.id === Number(noteButton.dataset.id)); if (!note) return; if (noteButton.classList.contains('complete-note')) { note.status = 'Concluída'; saveNotes(); recordAudit('Conclusão de nota', { tag: note.equipment }, `${note.type} concluída por ${note.requester}`); render(); showToast('Nota concluída e registrada.'); } else if (confirm('Excluir esta nota de manutenção?')) { maintenanceNotes = maintenanceNotes.filter(item => item.id !== note.id); saveNotes(); recordAudit('Exclusão de nota', { tag: note.equipment }, `${note.type} excluída`); render(); showToast('Nota excluída.'); } } });
-    document.addEventListener('click', event => { const navigationButton = event.target.closest('.nav button[data-view="maintenance-notes"]'); if (navigationButton) document.getElementById('page-title').textContent = 'Notas De Manutenção'; });
-    document.getElementById('login-form').onsubmit = event => { event.preventDefault(); const role = document.getElementById('login-role').value; const username = document.getElementById('username').value.trim(); currentUser = { name: username || role, role }; currentView = 'dashboard'; applyProfileNavigation(); document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-screen').classList.remove('hidden'); render(); };
-    document.querySelectorAll('.nav button').forEach(button => button.onclick = () => { const allowed = profileViews[currentUser?.role] || []; if (!allowed.includes(button.dataset.view)) { showToast('Seu perfil não possui acesso a esta área.'); return; } currentView = button.dataset.view; document.querySelectorAll('.nav button').forEach(item => item.classList.toggle('active', item === button)); document.getElementById('page-title').textContent = currentView === 'dashboard' ? 'Visão geral' : currentView === 'assets' ? 'Ativos' : currentView === 'plans' ? 'Planos' : currentView === 'maintenance-notes' ? 'Notas De Manutenção' : currentView === 'technicians' ? 'Técnicos' : currentView === 'audit' ? 'Auditoria' : currentView === 'settings' ? 'Configurações' : 'Assistente IA'; render(); });
-    document.getElementById('logout').onclick = () => { currentUser = null; currentView = 'dashboard'; document.getElementById('app-screen').classList.add('hidden'); document.getElementById('login-screen').classList.remove('hidden'); document.getElementById('password').value = ''; document.getElementById('username').value = ''; applyProfileNavigation(); };
-    document.addEventListener('click', event => { const tab = event.target.closest('.technician-tab'); if (tab) { currentTechnicianDiscipline = tab.dataset.technicianDiscipline; render(); } const taskButton = event.target.closest('.complete-task'); if (taskButton) { const technician = technicians.find(item => item.id === Number(taskButton.dataset.technician)); const task = technician?.tasks[Number(taskButton.dataset.task)]; if (technician && task) { recordAudit('Conclusão de plano', { tag: technician.name }, `Tarefa concluída: ${task}`); technician.tasks.splice(Number(taskButton.dataset.task), 1); render(); showToast('Plano concluído e registrado na auditoria.'); } } });
-    function settingsPage() { return `<div class="panel"><div class="panel-title">${icon('sliders-horizontal')}<h3>Aparência do sistema</h3></div><p style="color:var(--muted);font-size:12px">Personalize as cores e a tipografia. As alterações ficam salvas neste navegador.</p><div class="settings-grid"><div class="settings-preview"><strong>Prévia do cabeçalho</strong><span>Gestão Fabril · Centro de operações</span></div><div class="field"><label for="header-color">COR DO CABEÇALHO</label><div class="color-control"><input id="header-color" type="color" value="${theme.header}"><span>Escolha a cor da barra superior.</span></div></div><div class="field"><label for="accent-color">COR PRINCIPAL</label><div class="color-control"><input id="accent-color" type="color" value="${theme.accent}"><span>Usada em botões, ícones e destaques.</span></div></div><div class="field"><label for="font-family">FONTE DO SISTEMA</label><select id="font-family"><option ${theme.font === 'DM Sans' ? 'selected' : ''}>DM Sans</option><option ${theme.font === 'Space Grotesk' ? 'selected' : ''}>Space Grotesk</option><option ${theme.font === 'Georgia' ? 'selected' : ''}>Georgia</option><option ${theme.font === 'Verdana' ? 'selected' : ''}>Verdana</option></select></div><div class="settings-actions"><button class="btn btn-quiet" id="reset-theme" type="button">${icon('rotate-ccw')} Restaurar padrão</button></div></div></div>`; }
-    const maintenanceTypeObserver = new MutationObserver(() => { const select = document.getElementById('note-type'); if (select && !select.dataset.specialized) { select.innerHTML = '<option>Corretiva Mecânica</option><option>Corretiva Elétrica</option><option>Corretiva Calibração</option><option>Programada Mecânica</option><option>Programada Calibração</option><option>Programada Elétrica</option>'; select.dataset.specialized = 'true'; } });
-    maintenanceTypeObserver.observe(document.getElementById('main-content'), { childList: true, subtree: true });
-    document.addEventListener('input', event => { if (event.target.id === 'header-color') { theme.header = event.target.value; applyTheme(); saveTheme(); } if (event.target.id === 'accent-color') { theme.accent = event.target.value; applyTheme(); saveTheme(); } });
-    document.addEventListener('change', event => { if (event.target.id === 'font-family') { theme.font = event.target.value; applyTheme(); saveTheme(); } });
-    document.addEventListener('click', event => { if (event.target.closest('#reset-theme')) { theme = { ...defaultTheme }; saveTheme(); applyTheme(); render(); showToast('Aparência padrão restaurada.'); } });
-    const routeTeam = type => type.includes('Mecânica') ? 'Equipe mecânica' : type.includes('Elétrica') ? 'Equipe elétrica' : type.includes('Calibração') ? 'Equipe de calibração' : 'Equipe de manutenção';
-    const routePriorityClass = priority => priority === 'Muito urgente' ? 'critical' : priority === 'Urgente' ? 'urgent' : '';
-    function correctiveRoutesPage() { const routes = [...maintenanceNotes].filter(note => note.type.startsWith('Corretiva') && note.status !== 'Concluída').sort((firstNote, secondNote) => new Date(secondNote.createdAt) - new Date(firstNote.createdAt)); return `<div class="panel"><div class="panel-title">${icon('route')}<h3>Notas de manutenção corretiva abertas</h3><span class="badge teal" style="margin-left:auto">${routes.length} em aberto</span></div><p style="color:var(--muted);font-size:12px">Acompanhe as notas corretivas abertas e encaminhe cada atendimento para a equipe técnica responsável.</p><div class="route-list">${routes.length ? routes.map(note => { const routeStatus = note.routeStatus || note.status; return `<article class="route-card ${routePriorityClass(note.priority)}"><header><div><h3>${note.equipment}</h3><small>${note.type} · ${new Date(note.createdAt).toLocaleString('pt-BR')}</small></div><span class="badge ${routeStatus === 'Em atendimento' ? 'orange' : 'teal'}">${routeStatus}</span></header><div class="route-meta"><span class="badge gray">${routeTeam(note.type)}</span><span class="badge gray">${note.priority}</span><small>Aberta por ${note.requester}</small></div><p><strong>Falha:</strong> ${note.failure}<br><strong>Solução sugerida:</strong> ${note.solution}</p><div class="route-actions">${routeStatus === 'Aberta' ? `<button class="btn btn-primary start-route" data-id="${note.id}">${icon('play')} Iniciar atendimento</button>` : ''}${routeStatus === 'Em atendimento' ? `<button class="btn btn-primary finish-route" data-id="${note.id}">${icon('check')} Concluir nota</button>` : ''}</div></article>`; }).join('') : '<div class="empty">Nenhuma nota de manutenção corretiva aberta.</div>'}</div></div>`; }
-    function renderCorrectiveRoutes() { document.getElementById('main-content').innerHTML = `<div class="section-head"><div><h2>Notas de manutenção corretiva abertas</h2><p>Fila de atendimento para as equipes técnicas.</p></div></div>${correctiveRoutesPage()}`; refreshIcons(); }
-    const correctiveRoutesButton = document.createElement('button'); correctiveRoutesButton.dataset.view = 'corrective-routes'; correctiveRoutesButton.innerHTML = `${icon('route')}<span>Notas Corretivas Abertas</span>`; correctiveRoutesButton.onclick = () => { currentView = 'corrective-routes'; document.querySelectorAll('.nav button').forEach(item => item.classList.toggle('active', item === correctiveRoutesButton)); document.getElementById('page-title').textContent = 'Notas de manutenção corretiva abertas'; renderCorrectiveRoutes(); };
-    document.querySelector('.nav').appendChild(correctiveRoutesButton);
-    const profileViews = { Técnico: ['dashboard', 'maintenance-notes', 'settings', 'corrective-routes'], Analista: ['dashboard', 'assets', 'plans', 'maintenance-notes', 'technicians', 'assistant', 'audit', 'settings', 'corrective-routes'], Gestão: ['dashboard', 'assets', 'plans', 'maintenance-notes', 'technicians', 'assistant', 'audit', 'settings', 'corrective-routes'] };
-    function applyProfileNavigation() { const allowed = profileViews[currentUser?.role] || profileViews.Gestão; document.querySelectorAll('.nav button[data-view]').forEach(button => { button.style.display = allowed.includes(button.dataset.view) ? '' : 'none'; }); document.querySelector('.sidebar .user strong').textContent = currentUser?.name || 'Usuário'; document.querySelector('.sidebar .user small').textContent = currentUser?.role || 'Visitante'; if (!allowed.includes(currentView)) currentView = 'dashboard'; document.querySelectorAll('.nav button').forEach(button => button.classList.toggle('active', button.dataset.view === currentView)); }
-    document.addEventListener('click', event => { const startButton = event.target.closest('.start-route'); const finishButton = event.target.closest('.finish-route'); const routeButton = startButton || finishButton; if (!routeButton) return; const note = maintenanceNotes.find(item => item.id === Number(routeButton.dataset.id)); if (!note) return; if (startButton) { note.routeStatus = 'Em atendimento'; recordAudit('Início de rota corretiva', { tag: note.equipment }, `${note.type} encaminhada para ${routeTeam(note.type)}`); } else { note.routeStatus = 'Concluída'; note.status = 'Concluída'; recordAudit('Conclusão de rota corretiva', { tag: note.equipment }, `${note.type} concluída pela ${routeTeam(note.type)}`); } saveNotes(); renderCorrectiveRoutes(); showToast(startButton ? 'Atendimento iniciado.' : 'Rota concluída.'); });
-    applyTheme();
-    refreshIcons();
-  </script>
-</body>
+    <!-- A lógica fica separada do HTML para facilitar a manutenção. -->
+    <script src="js/app.js"></script>
+  </body>
 </html>
